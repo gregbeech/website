@@ -19,7 +19,7 @@ class GregSite < Sinatra::Base
   end
 
   error 500 do
-    "We broke something! Oh noes."
+    "We broke something! What a to-do."
   end
 
   get '/css/:style.css' do
