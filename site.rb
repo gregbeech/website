@@ -18,6 +18,10 @@ class GregSite < Sinatra::Base
     haml :error, locals: { area: nil, title: 'Page not found', message: "Sorry, that page doesn't exist." }
   end
 
+  error 500 do
+    "We broke something! What a to-do."
+  end
+
   get '/css/:style.css' do
     less params[:style].to_sym
   end
