@@ -14,10 +14,10 @@ module Kramdown
         end
         # process text nodes before the header as metadata attributes
         node.children.select { |c| c.type == :text }.each do |text|
-          key, value = text.value.split(':')
-          case key.strip.downcase
-          when 'date'
-            meta[:date] = Date.parse(value.strip)
+          key, value = text.value.split(':').map { |s| s.strip.downcase }
+          case key
+          when 'date', 'updated'
+            meta[key.to_sym] = Date.parse(value.strip)
           when 'tags'
             meta[:tags] = value.split(',').collect { |tag| tag.strip }
           end

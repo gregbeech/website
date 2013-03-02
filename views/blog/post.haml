@@ -1,3 +1,9 @@
 %article
-  %time{ datetime: date, pubdate: :pubdate } #{date.strftime('%-d %b %Y')}
+  %div.pubdate
+    %time{ datetime: date, pubdate: :pubdate } #{date.strftime('%-d %b %Y')}
+    -if (updated rescue nil)
+      %div.updated
+        last updated
+        %time{ datetime: updated, pubdate: :pubdate } #{updated.strftime('%-d %b %Y')}
+
   #{text}
