@@ -19,7 +19,7 @@ class GregSite < Sinatra::Base
   end
 
   error 500 do
-    "We broke something! What a to-do."
+    haml :error, locals: { area: nil, title: 'Oops... Something bad happened', message: "Sorry, an error occurred :-(" }
   end
 
   get '/css/:style.css' do
