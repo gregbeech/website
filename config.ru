@@ -1,3 +1,3 @@
 require './site'
 
-run GregSite.new
+run MySite.new

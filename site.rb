@@ -4,10 +4,10 @@ require 'kramdown'
 require 'less'
 require 'builder'
 require 'sinatra/base'
-require_relative 'lib/haml/filters/kramdown'
-require_relative 'lib/kramdown/document'
+require './lib/haml/filters/kramdown'
+require './lib/kramdown/document'
 
-class GregSite < Sinatra::Base
+class MySite < Sinatra::Base
   set :haml, format: :html5
 
   RFC822_DATE_FORMAT = '%a, %d %b %Y %H:%M:%S GMT'
@@ -15,11 +15,11 @@ class GregSite < Sinatra::Base
   # ------------------------------------------------------------------------------
 
   error 404 do
-    haml :error, locals: { area: nil, title: 'Page not found', message: "Sorry, that page doesn't exist." }
+    haml :error, locals: { title: 'Page not found', message: "Sorry, that page doesn't exist." }
   end
 
   error 500 do
-    haml :error, locals: { area: nil, title: 'Oops... Something bad happened', message: "Sorry, an error occurred :-(" }
+    haml :error, locals: { title: 'Oops... Something bad happened', message: "Sorry, an error occurred :-(" }
   end
 
   get '/css/:style.css' do

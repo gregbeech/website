@@ -70,16 +70,19 @@ def is_cacheable(request, response)
             return False
         if response.headers.vary.star
             return False
-        if exists(request.headers.authorization) and not response.headers.cache_control.public
+        if exists(request.headers.authorization) and 
+           not response.headers.cache_control.public
             return False
     if must_revalidate(response)
-        if not (exists(response.headers.etag) or exists(response.headers.last_modified))
+        if not (exists(response.headers.etag) or 
+        exists(response.headers.last_modified))
             return False
     if request.method is "GET"
         return True
-    if response.headers.cache_control.public or response.headers.cache_control.private
+    if response.headers.cache_control.public or 
+       response.headers.cache_control.private
         return True
-    return response.expires > now
+    return exists(response.expires)
 ~~~
 
 ## Freshness and Expiration
