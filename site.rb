@@ -8,7 +8,7 @@ require './lib/haml/filters/kramdown'
 require './lib/kramdown/document'
 
 class MySite < Sinatra::Base
-  set :haml, format: :html5
+  set :haml, format: :html5, ugly: true
 
   RFC822_DATE_FORMAT = '%a, %d %b %Y %H:%M:%S GMT'
   

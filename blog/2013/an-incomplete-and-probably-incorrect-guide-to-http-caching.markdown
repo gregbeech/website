@@ -5,7 +5,7 @@ Tags: Caching, HTTP, REST
 
 This post is an attempt to provide an easier to follow version of the rules laid out in [RFC 2616](http://tools.ietf.org/html/rfc2616) §§ 13-14 around HTTP caching and the impact of various HTTP headers on them. Some detail has been simplified and/or omitted to cover only the subset of HTTP typically used by RESTful APIs, as it was research into the blinkbox Web API that led me to write this.
 
-Due to the nature of the content, this post is fairly long and dry. If you're not particularly interested in the details then feel free to skip to the [examples](#examples) at the end which illustrate the main caching use-cases for APIs.
+Due to the nature of the content, this post is fairly long and dry. If you're not particularly interested in the details then feel free §to skip to the [examples](#examples) at the end which illustrate the main caching use-cases for APIs.
 
 I should also note up front that the HTTP caching rules are extremely complex and are spread out through the RFC, which means that it's possible - probable, even - that there are errors in this post. If you find any, please let me know and I'll update it.
 
@@ -70,17 +70,14 @@ def is_cacheable(request, response)
             return False
         if response.headers.vary.star
             return False
-        if exists(request.headers.authorization) and 
-           not response.headers.cache_control.public
+        if exists(request.headers.authorization) and not response.headers.cache_control.public
             return False
     if must_revalidate(response)
-        if not (exists(response.headers.etag) or 
-        exists(response.headers.last_modified))
+        if not (exists(response.headers.etag) or exists(response.headers.last_modified))
             return False
     if request.method is "GET"
         return True
-    if response.headers.cache_control.public or 
-       response.headers.cache_control.private
+    if response.headers.cache_control.public or response.headers.cache_control.private
         return True
     return exists(response.expires)
 ~~~
