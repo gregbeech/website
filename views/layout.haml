@@ -11,12 +11,16 @@
           %nav
             %ul
               - area = (area rescue nil)
-              %li{ class: (area == 'Home' ? 'current' : nil) } 
-                %a{ href: '/' } Home
+              %li
+                %a gregbee.ch
               %li{ class: (area == 'Blog' ? 'current' : nil) } 
-                %a{ href: '/blog' } Blog
+                %a{ href: '/blog' } /blog
               %li{ class: (area == 'CV' ? 'current' : nil) } 
-                %a{ href: '/cv' } CV
+                %a{ href: '/cv' } /cv
+              %li{ class: (area == 'About' ? 'current' : nil) } 
+                %a{ href: '/about' } /about
+              %li{ class: (area == 'Contact' ? 'current' : nil) } 
+                %a{ href: '/contact' } /contact
         %section#content
           =yield
         %footer

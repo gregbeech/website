@@ -27,11 +27,19 @@ class MySite < Sinatra::Base
   end
 
   get '/' do
-    haml :index, locals: { area: 'Home', title: 'Home' }
+    redirect '/blog'
+  end
+
+  get '/about' do
+    haml :about, locals: { area: 'About', title: 'About' }
   end
 
   get '/blog' do 
     haml :'blog/index', locals: { area: 'Blog', title: 'Blog', posts: blog_posts }
+  end
+
+  get '/contact' do
+    haml :contact, locals: { area: 'Contact', title: 'Contact Me' }
   end
 
   get '/blog/rss' do
