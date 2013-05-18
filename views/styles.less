@@ -10,7 +10,7 @@ html
 
 body
 {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Calibri, Arial, "Lucida Grande", sans-serif; 
   font-weight: 300;
   height: 100%; 
   margin: 0;
@@ -34,6 +34,8 @@ body
 #content
 {
   padding: 0 @stdspace;
+  font-size: 110%;
+  line-height: 130%;
 }
 
 nav
@@ -84,13 +86,6 @@ h1
   font-size: 150%;
 }
 
-p,
-li
-{
-  font-size: 110%;
-  line-height: 130%;
-}
-
 article .pubdate
 {
   display: block;
@@ -103,23 +98,23 @@ article .pubdate
   }
 }
 
-div.code
+pre
 {
   margin: @stdspace 0;
   border: 1px solid @bordercolor;
   background-color: #f3f3f3;
-  pre
-  {
-    margin: (@stdspace / 2);
-  }
+  padding: (@stdspace / 2);
+  line-height: 140%;
 }
 
-pre,
+div.code pre,
 code
 {
   font-family: Menlo, Consolas, 'Lucida Console', 'Courier New', monospace;
-  font-size: 90%;
+  font-size: 80%;
 }
+
+div.code pre
 
 blockquote
 {
