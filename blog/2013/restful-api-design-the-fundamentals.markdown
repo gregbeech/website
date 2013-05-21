@@ -1,4 +1,4 @@
-Date: 2013-05-31
+Date: 2013-05-21
 Tags: Caching, Design, HTTP, REST  
 
 # RESTful API Design: The Fundamentals
@@ -13,7 +13,7 @@ This is going to be a fairly long post, so if you're the impatient type then you
 
 One of the most frequently confused aspects of REST is the difference between a resource and a representation. A resource is a noun, for example a book or a person, but a representation is a particular way of looking at a noun using a specific JSON/XML/HTML/etc. structure. In other words, a single resource can have a number of different representations, and a number of different representations can all represent the same resource.
 
-Mapping this to HTTP, the resource being acted upon is defined by the URL. For example the book "Ultimatum" by Simon Kernick might be located at:
+When REST is mapped to HTTP, the resource being acted upon (i.e. the noun) is defined by the URL. For example the book "Ultimatum" by Simon Kernick might be located at:
 
     /catalogue/books/9781448136698
 
@@ -29,15 +29,17 @@ Two different representations of a single resource. All good so far.
 
 However, using a generic markup language media type is a sign of another commonly confused aspect of REST: the difference between schema and markup language. The schema defines the structure of the data in the representation, and this schema is then encoded using a markup language. A generic media type like `application/json` tells the client what markup language the data is encoded in, but nothing about the schema of the data it contains. 
 
-You might think that you could use namespaces to resolve this, but (a) that only works for markup languages that support namespaces, and (b) it doesn't give any way for the client to specify which versions of the schema it understands so you might be returning a version that it can't handle anyway. Using a generic media markup language media type means it's impossible to version your schema. 
+You might think that you could use namespaces to resolve this, but (a) that only works for markup languages that support namespaces, so JSON's out, and (b) it doesn't give any way for the client to specify which versions of the schema it understands so you might be returning a version that it can't handle anyway. Using a generic media markup language media type means it's impossible to version your schema. 
 
-To solve this problem we define our own media type that takes both the schema and markup language into account, for example:
+To solve this problem you need to define your own media type that takes both the schema and markup language into account, for example:
 
     Accept: application/vnd.example.data.v1+json
 
-The `vnd.` part means this is a vendor-specific media type as opposed to one registered with IANA, the `.v1` part allows us to have different versions of the schema, and the `+json` part indicates the markup language used to encode the schema. This means we can easily modify the media type to move to a new schema (`.v2`) or to allow us to encode the schema in a different markup language (`+xml`, `+html`).
+The `vnd.` part means this is a vendor-specific media type as opposed to one registered with IANA, the `.v1` part allows different versions of the schema, and the `+json` part indicates the markup language used to encode the schema. This means it's easy to modify the media type to move to a new schema (`.v2`) or to allow the schema to be encoded in a different markup language (`+xml`, `+html`).
 
 If the media type is likely to be widely used then you should  consider going through the standardisation process and registering a proper media type with IANA which would allow you to drop the `vnd.` part. For most people who are working in smaller companies or whose API isn't likely to be widely used, though, this probably isn't worth the effort.
+
+Many people find the idea of having a custom media type strange or abhorrent, but you see it all the time on the web. For example, you could transmit a stream of bytes with the generic media type `application/octet-stream` but you're only going to get an image in the browser if you attach semantics to those bytes by using a media type such as `application/jpeg`. Similarly you could publish XML with the media type `application/xml`, but your browser only knows to hand it off to a feed reader if you attach semantics to it by using a media type such as `application/rss+xml`.
 
 You should now be able to see why some commonly used means of versioning or requesting a particular markup type in APIs which claim to be RESTful are invalid, and make them anything but:
 
@@ -66,7 +68,7 @@ should be interpreted as "The book list resource that spans items 50-74" as oppo
 
 ## Methods
 
-HTTP methods (aka verbs) are used to perform actions on resources. The method in a request is the _only_ RESTful way to indicate which action should be performed/
+HTTP methods (aka verbs) are used to perform actions on resources. The method in a request is the _only_ RESTful way to indicate which action should be performed.
 
 The most important methods used in REST and their usual semantics are:
 
@@ -77,7 +79,7 @@ The most important methods used in REST and their usual semantics are:
 * `POST` - Creates a resource (typically appending it to a list) and returning the resource.
 * `DELETE` - Deletes the resource at a URL, and returns nothing.
 
-Note that these descriptions are guidelines but there is some room for flexibility allowed by the HTTP specification. For example:
+Note that these descriptions are guidelines but there is some room for flexibility allowed by the HTTP specification. A non-exhaustive list of examples is:
 
 * `DELETE` may be used as a 'reset' method by interpreting it as having deleted the old entity and immediately created a default replacement one, which it could return as `DELETE`s are permitted to return an entity-body.
 * `POST` may be used to create an entity at a known URL when the creation is complex, e.g. the submitted entity is used as the input for processing that results in the creation of the result entity.
@@ -91,7 +93,19 @@ And with that, we can move onto the most important section of the article; the t
 
 ## Hypertext
 
-TODO
+The defining characteristic of a RESTful API is that the interchange format is hypertext - i.e. it contains hyperlinks to other related resources so that clients don't have to have prior knowledge of endpoints to be able to use them. This isn't just a 'nice to have', it's a requirement for all RESTful APIs:
+
+> What needs to be done to make the REST architectural style clear on the notion that hypertext is a constraint? In other words, if the engine of application state (and hence the API) is not being driven by hypertext, then it cannot be RESTful and cannot be a REST API. Period. - [Roy Fielding](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven)
+
+Because the client doesn't need to know the endpoints the server is using in advance - instead following links with standardised relation names which are part of the media type description - the coupling is significantly reduced. The hypertext should also contain sufficient information that any parameters for the links can be discovered and that the request body can be constructed if one is necessary, _cf._ HTML forms.
+
+This last point is one of the more controversial ones in RESTful API design because core entities (e.g. a book, in a book-oriented company) may have a _lot_ of links to other resources, and each resource may have a _lot_ of parameters and/or a complex request body. Including information about the capability of each of these links in the response body, just in case the client requires them, would increase the payload size massively. As such, even the most REST-like APIs tend to shy away from being purely RESTful, and accept the increased coupling of having the available parameters hard-coded into clients rather than driven by hypertext.
+
+I can see both sides of the argument, and in the past most of the APIs I've designed and built have ended up being REST-like rather than RESTful because of this concession to payload size. I'm still not convinced it's the right decision, and I suspect that as network speeds continue to increase we'll start doing things 'properly' and including the operation metadata in the links.
+
+There's another alternative that I've been considering, and that's the use of the `OPTIONS` method: In other words, return just the bare link in the entity representation, but allow the client to obtain a full description of the operation's parameters and request payload by querying the endpoint itself (which would also return a hypertext response). This would keep the payloads of messages related to entities small, but still keep the coupling to a minimum because all information about an operation could be discovered at runtime. This seems compelling, although I still haven't worked out whether it would be RESTful; I should probably drop a mail to Roy Fielding and ask him.
+
+That's by no means everything worth saying about hypertext, and we haven't even covered things like URI templating, but this post is already getting fairly long so I'll leave it there and leave it to the curious reader to research further.
 
 ## Caching
 
@@ -124,19 +138,27 @@ However, RESTful APIs often perform authorisation. This is typically broken down
 1. Processing any authentication tokens in the request and construction of a resultant claim set (typically stored in a principal).
 2. Evaluation of the claim set against the requirements for the endpoint. 
 
-If the user does not meet the requirements for the end point, the "identity" claim is missing (i.e. the user is not signed in), and signing in could result in the user being allowed access then return 401 Unauthorized. Otherwise, if either the is already signed in, or signing in could not possibly resolve the lack of permission (e.g. the endpoint is GeoIP restricted so depends on context not identity), then return 403 Forbidden.
+If the user does not meet the requirements for the end point, the 'identity' (or 'subject') claim is missing (i.e. the user is not signed in), and signing in could result in the user being allowed access then return 401 Unauthorized. Otherwise, if either the is already signed in, or signing in could not possibly resolve the lack of permission (e.g. the endpoint is GeoIP restricted so depends on ambient context not identity), then return 403 Forbidden.
 
-In terms of passing authorisation tokens to a RESTful API then the only semantically correct option is in the headers; as previously discussed it is not valid to put it in the URL because the token does not form part of the identity of the resource, even if information in the token may be used to select a particular resource. Similarly, it isn't valid to put it in the body because that's conflating the resource representation with the permissions to act on it.
+In terms of passing authorisation tokens to a RESTful API then the only semantically correct option is in the headers; as previously discussed it is not valid to put it in the URL because the token itself does not form part of the identity of the resource, even if information contained within the token may be used to select a particular resource. Similarly, it isn't valid to put it in the body because that's conflating the resource representation with the permissions to act on it.
 
-Typically if the token is a cookie it will be passed in the Cookie header, otherwise it will be passed in the Authorization header. Note that if using bearer tokens (e.g. cookies) then the endpoint must use transport layer security to protect the token (i.e. HTTPS).
+Typically if the token is a cookie it will be passed in the `Cookie` header, otherwise it will be passed in the `Authorization` header. Note that if using bearer tokens (e.g. cookies) then the endpoint must use transport layer security to protect the token (i.e. HTTPS). You should see this as self-evident. If you don't, go and beat yourself around the head with [Troy Hunt's blog](http://www.troyhunt.com) until you do.
 
-As a sidebar to this section, forget device authorisation or encrypted API keys and the like as a concept. There was a fad for this a few years back, and some misguided souls still depend on it for 'security' but the fact is it's not only pointless, but outright dangerous as it offers a sense of security that just doesn't exist. Unless we're talking about trusted third parties with pre-shared keys - which we're usually not - then any content a client generates to send can, by definition, be generated by a client and thus can, by definition, be spoofed by a malicious client emulating an 'authorised' client.
+As a sidebar to this section: Forget device authorisation or encrypted API keys and the like as a concept. There was a fad for this a few years back, and some misguided souls still depend on it for 'security' but the fact is it's not only pointless, but outright dangerous as it offers a sense of security that just doesn't exist. Unless we're talking about trusted third parties with pre-shared keys - which we're usually not - then any content a client generates to send can, by definition, be generated by a client and thus can, by definition, be spoofed by a malicious client emulating an 'authorised' client.
+
+## Summary
+
+Everybody likes a summary, so here it is:
+
+REST is hard, and you're probably doing it wrong. 
+
+Don't blame yourself; just about everybody is. Heck, if Roy Fielding ever actually reads this article I'll probably be on the receiving end of a frustrated email telling me all the things I got wrong or missed out (which, frankly, would be awesome).
 
 ## Checklist
 
 If you got bored part of the way down, or are just looking for a nice TL;DR summary, then I've put together this little checklist for you. If the answer to any of these questions is "no" then your API is not RESTful; if the answers to all of them are "yes" then it might be, but I'm not guaranteeing it.
 
 - It must be possible to use the API in its entirety given only a description of the media types used, and the root URL. _(Failure here means that out-of-band information is being used to communicate information about the interaction, rather than hypertext.)_
-- Clients must not have to 'build' URLs, other than in ways that are detailed by the hypertext specification. _(Failure here means that clients have to assume a resource structure either from out-of-band information or by observing conventions.)_
+- Clients must not have to 'build' URLs or payloads, other than in ways that are detailed by the hypertext. _(Failure here means that clients have to assume a resource structure either from out-of-band information or by observing conventions.)_
 - All URLS must represent resources, i.e. they represent nouns. All actions that are performed on resources must be indicated my the HTTP method. _(Failure here means that you've defined an RPC API instead of a RESTful one.)_
-- Any authorisation must be passed in headers, not on the URL or in the payload. _(Failure here means that you're conflating resources and/or representations with permissions.)_
+- Any authorisation must be passed in headers, not on the URL or in the payload. _(Failure here means that you're conflating resources and/or representations with permissions to perform operations on them.)_
