@@ -27,15 +27,15 @@ Similarly, the following header would indicate the response is encoded as XML:
 
 Two different representations of a single resource. All good so far.
 
-However, using a generic markup language media type is a sign of another commonly confused aspect of REST: the difference between schema and markup language. The schema defines the structure of the data in the representation, and this schema is then encoded using a markup language. A generic media type like `application/json` tells the client what markup language the data is encoded in, but nothing about the schema of the data it contains. 
+However, using a generic markup language media type is a sign of another commonly confused aspect of REST: the difference between markup language and dialect. A generic media type like `application/json` tells you the markup language used to encode the data, but nothing about how to interpret the data itself.
 
-You might think that you could use namespaces to resolve this, but (a) that only works for markup languages that support namespaces, so JSON's out, and (b) it doesn't give any way for the client to specify which versions of the schema it understands so you might be returning a version that it can't handle anyway. Using a generic media markup language media type means it's impossible to version your schema. 
+You might think that you could use namespaces to resolve this, but (a) that only works for markup languages that support namespaces, so JSON's out, and (b) it doesn't give any way for the client to specify which versions of the dialect it understands so you might be returning a version that it can't handle anyway. Using a generic media markup language media type means it's impossible to version your dialect. 
 
-To solve this problem you need to define your own media type that takes both the schema and markup language into account, for example:
+To solve this problem you need to define your own media type that takes both the dialect and markup language into account, for example:
 
     Accept: application/vnd.example.data.v1+json
 
-The `vnd.` part means this is a vendor-specific media type as opposed to one registered with IANA, the `.v1` part allows different versions of the schema, and the `+json` part indicates the markup language used to encode the schema. This means it's easy to modify the media type to move to a new schema (`.v2`) or to allow the schema to be encoded in a different markup language (`+xml`, `+html`).
+The `vnd.` part means this is a vendor-specific media type as opposed to one registered with IANA, the `.v1` part allows different versions of the dialect, and the `+json` part indicates the markup language used to encode the dialect. This means it's easy to modify the media type to move to a new dialect (`.v2`) or to allow the dialect to be encoded in a different markup language (`+xml`, `+html`).
 
 If the media type is likely to be widely used then you should  consider going through the standardisation process and registering a proper media type with IANA which would allow you to drop the `vnd.` part. For most people who are working in smaller companies or whose API isn't likely to be widely used, though, this probably isn't worth the effort.
 

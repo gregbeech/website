@@ -6,7 +6,7 @@ GEM
     commonjs (0.2.6)
     daemons (1.1.9)
     eventmachine (1.0.3)
-    haml (4.0.2)
+    haml (4.0.3)
       tilt
     kramdown (1.0.2)
     less (2.3.2)
