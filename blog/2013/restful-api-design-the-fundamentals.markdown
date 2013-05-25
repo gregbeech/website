@@ -31,15 +31,15 @@ However, using a generic markup language media type is a sign of another commonl
 
 You might think that you could use namespaces to resolve this, but (a) that only works for markup languages that support namespaces, so JSON's out, and (b) it doesn't give any way for the client to specify which versions of the dialect it understands so you might be returning a version that it can't handle anyway. Using a generic media markup language media type means it's impossible to version your dialect. 
 
-To solve this problem you need to define your own media type that takes both the dialect and markup language into account, for example:
+To solve this problem you need to define your own media types that takes both the dialect and markup language into account, for example:
 
     Accept: application/vnd.example.data.v1+json
 
 The `vnd.` part means this is a vendor-specific media type as opposed to one registered with IANA, the `.v1` part allows different versions of the dialect, and the `+json` part indicates the markup language used to encode the dialect. This means it's easy to modify the media type to move to a new dialect (`.v2`) or to allow the dialect to be encoded in a different markup language (`+xml`, `+html`).
 
-If the media type is likely to be widely used then you should  consider going through the standardisation process and registering a proper media type with IANA which would allow you to drop the `vnd.` part. For most people who are working in smaller companies or whose API isn't likely to be widely used, though, this probably isn't worth the effort.
+If the media types are likely to be widely used then you should  consider going through the standardisation process and registering proper media types with IANA which would allow you to drop the `vnd.` part. For most people who are working in smaller companies or whose API isn't likely to be widely used, though, this probably isn't worth the effort.
 
-Many people find the idea of having a custom media type strange or abhorrent, but you see it all the time on the web. For example, you could transmit a stream of bytes with the generic media type `application/octet-stream` but you're only going to get an image in the browser if you attach semantics to those bytes by using a media type such as `application/jpeg`. Similarly you could publish XML with the media type `application/xml`, but your browser only knows to hand it off to a feed reader if you attach semantics to it by using a media type such as `application/rss+xml`.
+Many people find the idea of having custom media types strange or abhorrent, but you see it all the time on the web. For example, you could transmit a stream of bytes with the generic media type `application/octet-stream` but you're only going to get an image in the browser if you attach semantics to those bytes by using a media type such as `application/jpeg`. Similarly you could publish XML with the media type `application/xml`, but your browser only knows to hand it off to a feed reader if you attach semantics to it by using a media type such as `application/rss+xml`.
 
 You should now be able to see why some commonly used means of versioning or requesting a particular markup type in APIs which claim to be RESTful are invalid, and make them anything but:
 

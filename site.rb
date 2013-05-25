@@ -23,7 +23,12 @@ class MySite < Sinatra::Base
   end
 
   get '/css/:style.css' do
-    less params[:style].to_sym
+    filename = params[:style] + '.css'
+    if File.exist?(filename)
+      send_file File.expand_path(filename, settings.public_folder)
+    else
+      less params[:style].to_sym
+    end
   end
 
   get '/' do
@@ -77,7 +82,7 @@ class MySite < Sinatra::Base
   end
 
   get '/blog/:key' do
-    filename = Dir::glob("blog/**/#{params[:key]}.markdown").first
+    filename = Dir.glob("blog/**/#{params[:key]}.markdown").first
     halt 404 unless filename
     haml :'blog/post', locals: blog_post(filename).merge({ area: 'Blog' })
   end
@@ -89,8 +94,8 @@ class MySite < Sinatra::Base
   # ------------------------------------------------------------------------------
 
   def blog_posts(include_text = false)
-    posts = Dir::glob('blog/**/*.markdown').map { |filename| blog_post(filename, include_text) }
-    posts.reject! { |post| !post[:date] || post[:date] > Date::today } # only show posts with valid date
+    posts = Dir.glob('blog/**/*.markdown').map { |filename| blog_post(filename, include_text) }
+    posts.reject! { |post| !post[:date] || post[:date] > Date.today } # only show posts with valid date
     posts.sort! { |a, b| b[:date] <=> a[:date] }
   end
 
@@ -102,7 +107,7 @@ class MySite < Sinatra::Base
     else 
       metadata = document.metadata
     end
-    metadata.merge({ link: '/blog/' + File::basename(filename, '.*') })
+    metadata.merge({ link: '/blog/' + File.basename(filename, '.*') })
   end
   
 end
