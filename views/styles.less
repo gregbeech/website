@@ -16,7 +16,7 @@ body
   font-weight: 300;
   height: 100%; 
   margin: 0;
-  border-top: 5px solid @accentcolor;
+  border-top: 6px solid @accentcolor;
   color: @textcolor;
   text-shadow: rgba(0, 0, 0, 0.498039) 0px 1px 3px;;
 }
@@ -97,7 +97,7 @@ h2
 }
 h3
 {
-  font-size: 23px;
+  font-size: 21px;
 }
 p,
 li
@@ -139,6 +139,20 @@ pre
   text-shadow: rgba(0, 0, 0, 0.498039) 0px 1px 3px;
 }
 
+.notice
+{
+  margin: @stdspace 0;
+  border: 1px solid #333333;
+  border-radius: 6px;
+  color: @accentcolor;
+  background-color: #333333;
+  padding: (@stdspace / 2);
+  font-style: italic;
+  text-align: center;
+  box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 10px 0px inset, rgba(255, 255, 255, 0.0980392) 0px 1px 0px 0px, rgba(0, 0, 0, 0.498039) 0px 0px 0px 0px;
+  text-shadow: rgba(0, 0, 0, 0.498039) 0px 1px 3px;
+}
+
 div.code pre,
 code
 {
@@ -170,8 +184,8 @@ footer
   padding-bottom: (@stdspace / 2);
   p 
   {
-    font-size: 12px;
-    line-height: 12px;
+    font-size: 13px;
+    line-height: 10px;
     text-align: center;
     color: #787878;
   }

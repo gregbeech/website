@@ -92,7 +92,7 @@ ol.CodeRay li { white-space: pre }
 .CodeRay .preprocessor { color:#579; }
 .CodeRay .pseudo-class { color:#00C; font-weight:bold }
 .CodeRay .predefined { color:#9B5C2E; font-weight:bold }
-.CodeRay .predefined-type { color:#074; font-weight:bold }
+.CodeRay .predefined-type { color:#9B5C2E; font-weight:bold }
 .CodeRay .reserved, .keyword  { color:#CDA869; font-weight:bold }
 
 .CodeRay .key { color: #808; }
@@ -122,7 +122,7 @@ ol.CodeRay li { white-space: pre }
 
 .CodeRay .tag { color:#070 }
 .CodeRay .tag-special { color:#D70; font-weight:bold }
-.CodeRay .type { color:#339; font-weight:bold }
+.CodeRay .type { color:#9B5C2E; font-weight:bold }
 .CodeRay .variable  { color:#036 }
 
 .CodeRay .insert { background: #afa; }
