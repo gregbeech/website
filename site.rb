@@ -100,7 +100,7 @@ class MySite < Sinatra::Base
   end
 
   def blog_post(filename, include_text = true)
-    document = Kramdown::Document.new(File.read(filename), coderay_line_numbers: nil)
+    document = Kramdown::Document.new(File.read(filename), coderay_line_numbers: nil, coderay_css: :class)
     if include_text
       metadata = document.extract_metadata!
       metadata[:text] = document.to_html

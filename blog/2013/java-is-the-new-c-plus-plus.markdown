@@ -88,7 +88,7 @@ bytes +:= 0
 
 Yeah, I'm not kidding. Those code fragments are equivalent.
 
-I know what you're thinking. The Scala code looks more cryptic. But much like `a += b` expands to `a = a + b` in Java, `a +:= b` expands to `a = a.+:(b)` in Scala, where the part before the `=` is the method name; `+:` is a legal method name in Scala. All you have to remember is a universal expansion rule, which is arguably simpler than the localised expansion rule in Java.
+I know what you're thinking though. The Scala code looks more cryptic. But much like `a += b` expands to `a = a + b` in Java, `a +:= b` expands to `a = a.+:(b)` in Scala, where the part before the `=` is the method name; `+:` is a legal method name in Scala. All you have to remember is a universal expansion rule, which is arguably simpler than the localised expansion rule in Java.
 
 So after a while, the extra power stops being cryptic, and starts becoming natural. I certainly find it easier because it's regular, unlike the Java code where I had to refer to the documentation to see which order the parameters for `arraycopy` come in, and nearly made an off-by-one error while typing it.
 

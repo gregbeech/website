@@ -1,89 +1,91 @@
-@bgcolor: #efefef;
-@textcolor: #002395;
+@bgcolor: #444;
+@textcolor: rgb(221, 221, 221);
 @bordercolor: #cdcdcd;
 @stdspace: 24px;
+@accentcolor: rgb(105, 190, 40);
 
 html 
 {
   height: 100%;
+  background-color: #333;
 }
 
 body
 {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Calibri, Arial, "Lucida Grande", sans-serif; 
+  font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 300;
   height: 100%; 
   margin: 0;
+  border-top: 5px solid @accentcolor;
   color: @textcolor;
+  text-shadow: rgba(0, 0, 0, 0.498039) 0px 1px 3px;;
 }
 
-#wrapper1
+#wrapper
 { 
-  background-color: @bgcolor;
   width: 880px;
   margin: 0 auto;
   height: 100%;
   text-align: left;
 }
 
-#wrapper2
-{
-  background-color: @bgcolor;
-}
-
 #content
 {
-  padding: 0 @stdspace;
+  background-color: @bgcolor;
+  padding: @stdspace;
+  margin-top: (@stdspace / 2);
   font-size: 110%;
   line-height: 130%;
+  box-shadow: rgba(0, 0, 0, 0.298039) 0px 0px 20px 0px;
+  border-radius: 20px;
 }
 
 nav
 {
-  background-color: #5d76cb;
+  background-color: #333;
   ul
   {
     list-style-type: none;
-    font-size: 120%;
     font-weight: bold;
-    margin: 0;
+    margin: @stdspace 0;
     padding: 0;
     li 
     {
       display: inline-block;
+      font-size: 28px;
+      border-radius: 6px;
       a
       {
         display: block;
         padding: (@stdspace / 3) @stdspace;
         text-decoration: none;
-        color: @bgcolor;
+        color: @accentcolor;
       }
+    }
+    li:hover
+    {
+      background-color: #444;
+    }
+    li.home:hover
+    {
+      background-color: #333;
     }
     li.current
     {
-      background-color: @bgcolor;
+      background-color: @accentcolor;
       a
       {
-        color: @textcolor;
+        color: #333;
       }
     }
   }
-}
-
-footer
-{
-  margin-top: (@stdspace * 2);
-  padding-bottom: (@stdspace / 2);
-  border-top: 1px solid @bordercolor;
-  font-size: 70%;
-  text-align: center;
-  color: #787878;
 }
 
 h1
 {
   text-align: center;
   font-size: 150%;
+  margin-top: 0;
 }
 h2
 {
@@ -93,11 +95,25 @@ h3
 {
   font-size: 115%;
 }
+p,
+li
+{
+  font-size: 21px;
+  line-height: 31.5px;
+}
+
+a
+{
+  color: @accentcolor;
+}
+#content a:visited
+{
+  color: #4b881d;
+}
 
 article .pubdate
 {
   display: block;
-  margin-top: @stdspace;
   text-align: right;
   font-weight: bold;
   .updated
@@ -109,11 +125,13 @@ article .pubdate
 pre
 {
   margin: @stdspace 0;
-  border: 1px solid @bordercolor;
+  border: 1px solid #333333;
   border-radius: 6px;
-  background-color: #f3f3f3;
+  background-color: #333333;
   padding: (@stdspace / 2);
   line-height: 140%;
+  box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 10px 0px inset, rgba(255, 255, 255, 0.0980392) 0px 1px 0px 0px, rgba(0, 0, 0, 0.498039) 0px 0px 0px 0px;
+  text-shadow: rgba(0, 0, 0, 0.498039) 0px 1px 3px;
 }
 
 div.code pre,
@@ -138,6 +156,20 @@ ol.blogposts
 {
   list-style-type: none;
   padding-left: 0;
+}
+
+footer
+{
+  background-color: #333;
+  margin-top: @stdspace * 2;
+  padding-bottom: (@stdspace / 2);
+  p 
+  {
+    font-size: 12px;
+    line-height: 12px;
+    text-align: center;
+    color: #787878;
+  }
 }
 
 a.github img
