@@ -10,20 +10,20 @@
   padding: 1em 0px 1em 1em;
 }*/
 
-.CodeRay pre {
+/*.CodeRay pre {
   margin: 0px;
-}
+}*/
 
-div.CodeRay { }
+/*div.CodeRay { }
 span.CodeRay { white-space: pre; border: 0px; padding: 2px }
 
 table.CodeRay { border-collapse: collapse; width: 100%; padding: 2px }
 table.CodeRay td {
   padding: 1em 0.5em;
   vertical-align: top;
-}
+}*/
 
-.CodeRay .line-numbers, .CodeRay .no {
+/*.CodeRay .line-numbers, .CodeRay .no {
   background-color: #ECECEC;
   color: #AAA;
   text-align: right;
@@ -44,7 +44,7 @@ ol.CodeRay li { white-space: pre }
 
 .CodeRay .code pre { overflow: auto }
 .CodeRay .debug { color:white ! important; background:blue ! important; }
-
+*/
 .CodeRay .annotation { color:#007 }
 .CodeRay .attribute-name { color:#f08 }
 .CodeRay .attribute-value { color:#700 }

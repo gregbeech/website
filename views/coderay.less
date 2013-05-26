@@ -1,0 +1,25 @@
+@comment: #75715E;
+@const: #AE81FF;
+@keyword: #F92672;
+@number: #AE81FF;
+@predef: #66D9EF;
+@string: #E6DB74;
+@symbol: #A6E22E;
+
+.CodeRay
+{
+    .class { color: @symbol }
+    .comment { color: @comment; }
+    .constant { color: @const; }
+    .directive { color: @keyword; }
+    .float { color: @number; }
+    .function { color: @symbol; }
+    .integer { color: @number; }
+    .keyword { color: @keyword; }
+    .predefined { color: @predef; }
+    .predefined-constant { color: @const; }
+    .predefined-type { color: @predef; }
+    .reserved { color: @keyword; }
+    .string, .string .string, .string .string .string { color: @string; }
+    .type { color: @predef; }
+}

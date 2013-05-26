@@ -7,7 +7,7 @@ A year or so back I posted [some methods to shuffle a sequence or take a random 
 
 Happily, I chanced upon a description of [reservoir sampling](http://gregable.com/2007/10/reservoir-sampling.html) which gives a way to take a sample of N items from a sequence of unknown length S in O(S) time and O(N) space. I won't go into the maths as it's described well in the linked article, but as I couldn't find a readily available .NET implementation I will complement the article with one that I wrote. It's not the most beautiful code, but it works in a single pass and should be about as fast as possible.
 
-~~~ csharp
+~~~csharp
 public static IEnumerable<T> TakeRandom<T>(this IEnumerable<T> source, int count)
 {
     var copied = 0;

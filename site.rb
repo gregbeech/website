@@ -4,6 +4,8 @@ require 'kramdown'
 require 'less'
 require 'builder'
 require 'sinatra/base'
+require './lib/coderay/scanners/csharp'
+require './lib/coderay/scanners/scala'
 require './lib/haml/filters/kramdown'
 require './lib/kramdown/document'
 

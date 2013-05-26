@@ -56,7 +56,7 @@ Iterable<Object> items = new ArrayList<String>(); // error: incompatible types
 
 Needless to say, in non-broken languages that support non-broken variance, this stuff just works:
 
-~~~java
+~~~csharp
 IEnumerable<object> items = new List<string>(); // in C# this is totally ok
 ~~~
 
