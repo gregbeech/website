@@ -1,13 +1,13 @@
 Date: 2013-12-31
-Tags: C++, Java, Languages
+Tags: Java, Languages, Rants, Scala
 
 # Java is the new C++
 
-Back in the early 1990s Java was conceived as an alternative to C++ which would be portable, garbage collected, and easier to learn, but still retaining a C-like syntax to make programmers feel more comfortable migrating to it. There are a variety of reasons why Java became so popular on launch, marketing not being the least of them, and now it's one of the most popular languages in the world. Perhaps _the_ most popular, depending on who you believe.
+Back in the early 1990s Java was conceived as an alternative to C++ which would be portable, garbage collected, and easier to learn, but still retaining a C-like syntax to make programmers feel more comfortable migrating to it. There are a variety of reasons why Java became so popular on launch, marketing not being the least of them, and now it's one of the most popular languages in the world. Perhaps _the_ most popular, depending on which statistics you believe.
 
 When Java was released in 1996, I wasn't a developer. In fact, I think at that point the most code I had written was:
 
-~~~java
+~~~python
 10 PRINT "HELLO WORLD"
 20 GOTO 10
 30 END
@@ -15,13 +15,13 @@ When Java was released in 1996, I wasn't a developer. In fact, I think at that p
 
 As such, I'm going to have to take the word of the older and more grizzled developers I know that yes, for building many types of software, Java was a much better language than C++. Presumably it still is. The trouble is, the game has moved on, and C++ isn't the main competition any more. 
 
-It's the best part of 20 years since Java was launched, and time has left the language behind. Can you think of another modern language that doesn't have lambda expressions and proper closures? And yeah, I know they're supposed to be coming in Java 8, but they've been supposed to be coming for years. And even then Java 8's release data has slipped back to 2014 (at least), which just encourages derogatory comparison with C++0x... er, I mean C++11.
+It's the best part of 20 years since Java was launched, and time has left the language behind. For example, can you think of another modern language that doesn't have lambda expressions and proper closures? And yeah, I know they're supposed to be coming in Java 8, but they've been supposed to be coming for years. And even then Java 8's release data has slipped back to 2014 (at least), which just encourages derogatory comparison with C++0x... er, I mean C++11.
 
 What's even worse is that Java developers know that it's a clumsy, outdated language. When you point out the incredibly verbose syntax, the pain of checked exceptions (which has to go down as one of _the_ most stupid language features in history), the incomprehensibility of `T[]` not being assignment compatible with `Iterable<T>`, and the fact that it's impossible to transform a collection of something into a collection of something else without either writing five lines of `for`-loop or importing a third party library and writing five lines of anonymous inner class, they'll still defend it as being "good enough".
 
 It isn't. Not by a long shot.
 
-Defending Java as a "good enough" language only further reinforces my opinion that if anybody describes themselves as an "X developer", you can replace "X" with "Crap" and have a reasonable probability of being correct. If you don't care about the tools you use every day - and a language _is_ just a tool - then it's hard to believe you're going to care much about what you produce with them.
+Anybody defending Java as a "good enough" language is generally doing so from a position of knowing _only_ Java and not wanting to have to learn anything else. This only further reinforces my opinion that if anybody describes themselves as an "X developer" you can replace "X" with "average" or "lazy" and have a reasonable probability of being correct. This applies for pretty much any value of X by the way; not just Java. If you don't care about the language you use every day then it's hard to believe you're going to care much about what you produce with it.
 
 The last stand of the Java developer when trying to defend the language is that at least it's easy to learn. But that isn't true either. What they mean is that because Java has so little expressive power that there isn't much in the way of language features to learn, which _is_ true, but Java still goes out of its way to make the few concepts it can express appear complex.
 

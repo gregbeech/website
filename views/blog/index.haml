@@ -1,5 +1,5 @@
 -# coding: utf-8
-%h1 Random Technical Outbursts
+%h1 Musings, Rants and Other Stuff
 
 %p
   :kramdown
@@ -8,5 +8,6 @@
 %ol.blogposts
   -posts.each do |post|
     %li
-      %a{ href: post[:link] } #{post[:title]}
+      %a{ href: post[:link] }
+        & #{post[:title]}
       (#{post[:date].strftime('%-d %b %Y')})

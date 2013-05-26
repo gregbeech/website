@@ -106,15 +106,6 @@ li
   line-height: 31.5px;
 }
 
-a
-{
-  color: @accentcolor;
-}
-#content a:visited
-{
-  color: #4b881d;
-}
-
 article .pubdate
 {
   display: block;
@@ -153,11 +144,18 @@ pre
   text-shadow: rgba(0, 0, 0, 0.498039) 0px 1px 3px;
 }
 
+
 div.code pre,
 code
 {
   font-family: Menlo, Consolas, 'Lucida Console', 'Courier New', monospace;
-  font-size: 80%;
+  font-size: 18px;
+  color: #aaa;
+}
+div.code pre
+{
+  font-size: 14px;
+  color: @textcolor;
 }
 
 blockquote
@@ -175,6 +173,22 @@ ol.blogposts
 {
   list-style-type: none;
   padding-left: 0;
+}
+
+
+a,
+a code
+{
+  color: @accentcolor;
+}
+#content a:visited
+{
+  color: #4b881d;
+}
+
+.center 
+{
+  text-align: center;
 }
 
 footer

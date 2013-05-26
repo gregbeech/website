@@ -9,7 +9,7 @@ module Kramdown
       @root.children.reduce({}) do |meta, node|
         # stop when we find the header
         if (node.type == :header)
-          meta[:title] = node.children.select { |c| c.type == :text }.first.value
+          meta[:title] = node.options[:raw_text]
           break meta
         end
         # process text nodes before the header as metadata attributes

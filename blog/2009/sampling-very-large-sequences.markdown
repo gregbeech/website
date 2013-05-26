@@ -56,6 +56,7 @@ So, now we've got rid of the O(S) copy operation, how does the performance of th
 
 Terribly.
 
+{:.center}
 ![TakeRandom old vs TakeRandom new](/reservoir-sampling-performance.png)
 
 These results are the timings of taking ten random integers from sequences ranging from ten to a billion elements, timed over a thousand iterations per sequence length for shorter sequences, going down to ten iterations for longer sequences (otherwise we'd still be waiting here for the results). Both exhibit linear performance, however it is clear that for even for sequences as large as a hundred million integers the new reservoir sampling TakeRandom method is an order of magnitude slower than the old Fisher-Yates one.
