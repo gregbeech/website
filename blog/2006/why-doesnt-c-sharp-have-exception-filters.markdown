@@ -32,15 +32,14 @@ What I really wanted to do, however, was only catch the exception if it had the 
 Public Shared Function PeekMessage(
     ByVal queue As MessageQueue, ByVal timeout As TimeSpan) As Message
     
-    Dim myMessage as Message = Nothing
+    Dim myMessage As Message = Nothing
     Try        
         myMessage = queue.Peek(timeout)        
     Catch ex As MessageQueueException _
         When ex.MessageQueueErrorCode = MessageQueueErrorCode.IOTimeout
-        'swallow the exception
+        'swallow the exception'
     End Try
     Return myMessage
-
 End Function
 ~~~
 

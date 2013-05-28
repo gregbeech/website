@@ -1,328 +1,175 @@
-### Copyright (c) 2011, Taylor Venable
-### All rights reserved.
-###
-### Redistribution and use in source and binary forms, with or without
-### modification, are permitted provided that the following conditions are met:
-###
-###     * Redistributions of source code must retain the above copyright
-###       notice, this list of conditions and the following disclaimer.
-###
-###     * Redistributions in binary form must reproduce the above copyright
-###       notice, this list of conditions and the following disclaimer in the
-###       documentation and/or other materials provided with the distribution.
-###
-### THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-### AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-### IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-### ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-### LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-### CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-### SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-### INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-### CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-### ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-### POSSIBILITY OF SUCH DAMAGE.
-
-# Originally based on the Java scanner,
-# although there's not too much of it left by now.
-
-require 'coderay/helpers/file_type'
-
 module CodeRay
-  if defined? TCV_LOCAL_TESTING then
-    module FileType
-      TypeFromExt['scala'] = :scala
-    end
-  end
-
 module Scanners
-
+  
+  # Scanner for Java.
   class Scala < Scanner
-
-    # include Streamable
+    
     register_for :scala
-
-    # if defined? TCV_LOCAL_TESTING then
-        load 'lib/coderay/scanners/scala/builtin_types.rb'
-    # else
-    #     helper :builtin_types
-    # end
-
-    # from the Scala Language Spec, 2.8 - section 1.1: "Identifiers"
-
+    
+    require_relative "./scala/builtin_types"
+    # autoload :BuiltinTypes, "./scala/builtin_types"
+    
+    # http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html
     KEYWORDS = %w[
-        case catch do else finally for forSome if import match new
-        return throw try while yield
-        _ : = => <- <: <% >: # @
-    ]
-
-    RESERVED = %w[ class def object package trait type val var ]
-
-    CONSTANTS = %w[ false null true Nil None ]
-
-    MAGIC_VARIABLES = %w[ this super ]
-
+      case catch continue default do else object match with val var
+      finally for if instanceof import new package override def
+      return switch throw try typeof while implicit type 
+      debugger export
+    ]  # :nodoc:
+    RESERVED = %w[ const goto ]  # :nodoc:
+    CONSTANTS = %w[ false null true ]  # :nodoc:
+    MAGIC_VARIABLES = %w[ this super ]  # :nodoc:
     TYPES = %w[
       boolean byte char class double enum float int interface long
       short void
-    ] << '[]'  # because int[] should be highlighted as a type
-
+    ] << '[]'  # :nodoc: because int[] should be highlighted as a type
     DIRECTIVES = %w[
-      abstract extends final implicit lazy override private protected
-      sealed volatile with
-    ]
-
+      abstract extends final implements native private protected public
+      static strictfp synchronized throws transient volatile
+    ]  # :nodoc:
+    
     IDENT_KIND = WordList.new(:ident).
       add(KEYWORDS, :keyword).
       add(RESERVED, :reserved).
-      add(CONSTANTS, :pre_constant).
+      add(CONSTANTS, :predefined_constant).
       add(MAGIC_VARIABLES, :local_variable).
       add(TYPES, :type).
-      add(BuiltinTypes::List, :pre_type).
+      add(BuiltinTypes::List, :predefined_type).
       add(BuiltinTypes::List.select { |builtin| builtin[/(Error|Exception)$/] }, :exception).
-      add(DIRECTIVES, :directive)
+      add(DIRECTIVES, :directive)  # :nodoc:
 
-    ESCAPE = / [bfnrtv\n\\'"] | x[a-fA-F0-9]{1,2} | [0-7]{1,3} /x
-    UNICODE_ESCAPE =  / u[a-fA-F0-9]{4} | U[a-fA-F0-9]{8} /x
+    ESCAPE = / [bfnrtv\n\\'"] | x[a-fA-F0-9]{1,2} | [0-7]{1,3} /x  # :nodoc:
+    UNICODE_ESCAPE =  / u[a-fA-F0-9]{4} | U[a-fA-F0-9]{8} /x  # :nodoc:
     STRING_CONTENT_PATTERN = {
       "'" => /[^\\']+/,
       '"' => /[^\\"]+/,
-      '/' => /[^\\\/]+/
-    }
-    IDENT = /[a-zA-Z_][A-Za-z_0-9]*/
-
-    def highlight_import_block_element import
-      tokens = []
-      if groups = import.match(/([\s]*[^\s]+\s*=>\s*)([^\s]+)(.*)/m) then
-        tokens << [groups[1], :content]
-        tokens << [groups[2], :include]
-        tokens << [groups[3], :content]
-      elsif groups = import.match(/([\s]*)([^\s]+)(.*)/m) then
-        tokens << [groups[1], :content]
-        tokens << [groups[2], :include]
-        tokens << [groups[3], :content]
-      else
-        tokens << [import, :content]
-      end
-      return tokens
-    end
-
-    def scan_tokens tokens, options
+      '/' => /[^\\\/]+/,
+    }  # :nodoc:
+    IDENT = /[a-zA-Z_][A-Za-z_0-9]*/  # :nodoc:
+    
+  protected
+    
+    def scan_tokens encoder, options
 
       state = :initial
       string_delimiter = nil
-      import_clause = type_name_follows = last_token_dot = false
+      package_name_expected = false
+      class_name_follows = false
+      last_token_dot = false
 
       until eos?
-
-        kind = nil
-        match = nil
 
         case state
 
         when :initial
 
           if match = scan(/ \s+ | \\\n /x)
-            tokens << [match, :space]
+            encoder.text_token match, :space
             next
-
-          elsif match = scan(%r!/\*.*?(\*/|\n)!) then
-            tokens << [match, :comment]
-            if match[-1] == ?\n then
-              state = :comment
-              comment_nesting_level = 1
-            end
+          
+          elsif match = scan(%r! // [^\n\\]* (?: \\. [^\n\\]* )* | /\* (?: .*? \*/ | .* ) !mx)
+            encoder.text_token match, :comment
             next
-
-          elsif match = scan(%r! // [^\n\\]* (?: \\. [^\n\\]* )*!mx)
-            tokens << [match, :comment]
-            next
-
-          elsif import_clause && scan(/ #{IDENT} (?: \. #{IDENT} )* /ox)
-            kind = :include
-
+          
+          elsif package_name_expected && match = scan(/ #{IDENT} (?: \. #{IDENT} )* /ox)
+            encoder.text_token match, package_name_expected
+          
           elsif match = scan(/ #{IDENT} | \[\] /ox)
             kind = IDENT_KIND[match]
             if last_token_dot
               kind = :ident
-            elsif type_name_follows
+            elsif class_name_follows
               kind = :class
-              type_name_follows = false
+              class_name_follows = false
             else
-              if match == 'import' then
-                tokens << [match, :keyword]
-                state = :import
-                next
-              elsif match == 'class' || match == 'object' || match == 'type' then
-                type_name_follows = true
+              case match
+              when 'import'
+                package_name_expected = :include
+              when 'package'
+                package_name_expected = :namespace
+              when 'class', 'trait', 'case class', 'object'
+                class_name_follows = true
               end
             end
-
-          elsif scan(/ \.(?!\d) | [,?:()\[\]}] | -- | \+\+ | && | \|\| | \*\*=? | [-+*\/%^~&|<>=!]=? | <<<?=? | >>>?=? /x)
-            kind = :operator
-
-          elsif scan(/;/)
-            import_clause = false
-            kind = :operator
-
-          elsif scan(/\{/)
-            type_name_follows = false
-            kind = :operator
-
+            encoder.text_token match, kind
+          
+          elsif match = scan(/ \.(?!\d) | [,?:()\[\]}] | -- | \+\+ | && | \|\| | \*\*=? | [-+*\/%^~&|<>=!]=? | <<<?=? | >>>?=? /x)
+            encoder.text_token match, :operator
+          
+          elsif match = scan(/;/)
+            package_name_expected = false
+            encoder.text_token match, :operator
+          
+          elsif match = scan(/\{/)
+            class_name_follows = false
+            encoder.text_token match, :operator
+          
           elsif check(/[\d.]/)
-            if scan(/0[xX][0-9A-Fa-f]+/)
-              kind = :hex
-            elsif scan(/(?>0[0-7]+)(?![89.eEfF])/)
-              kind = :oct
-            elsif scan(/\d+[fFdD]|\d*\.\d+(?:[eE][+-]?\d+)?[fFdD]?|\d+[eE][+-]?\d+[fFdD]?/)
-              kind = :float
-            elsif scan(/\d+[lL]?/)
-              kind = :integer
+            if match = scan(/0[xX][0-9A-Fa-f]+/)
+              encoder.text_token match, :hex
+            elsif match = scan(/(?>0[0-7]+)(?![89.eEfF])/)
+              encoder.text_token match, :octal
+            elsif match = scan(/\d+[fFdD]|\d*\.\d+(?:[eE][+-]?\d+)?[fFdD]?|\d+[eE][+-]?\d+[fFdD]?/)
+              encoder.text_token match, :float
+            elsif match = scan(/\d+[lL]?/)
+              encoder.text_token match, :integer
             end
-
-          elsif match = scan(/"""/)
-            tokens << [:open, :string]
-            tokens << ['"""', :delimiter]
-            tokens << [:close, :string]
-            string_delimiter = match
-            string_raw = false
-            state = :string
-            next
 
           elsif match = scan(/["']/)
-            tokens << [:open, :string]
             state = :string
+            encoder.begin_group state
             string_delimiter = match
-            kind = :delimiter
+            encoder.text_token match, :delimiter
+
+          elsif match = scan(/ @ #{IDENT} /ox)
+            encoder.text_token match, :annotation
 
           else
-            getch
-            kind = :error
+            encoder.text_token getch, :error
 
           end
-
-          # END state = :initial
-
-        when :import
-          if match = scan_until(/\n|\{/) then
-            if match[-1] == ?{ then
-              tokens << [match[0 .. -2], :include]
-              tokens << ["{", :content]
-              state = :import_block
-              next
-            else
-              tokens << [match[0 .. -1], :include]
-              state = :initial
-              next
-            end
-          end
-
-          # END state = :import
-
-        when :import_block
-          if match = scan_until(/\}/) then
-            imports = match[0 .. -2].split(",")
-            imports[0 .. -2].each { |import|
-              highlight_import_block_element(import).each { |t| tokens << t }
-              tokens << [",", :content]
-            }
-            highlight_import_block_element(imports[-1]).each { |t| tokens << t }
-            tokens << ["}", :content]
-            state = :initial
-            next
-          end
-
-          # END state = :import_block
-
-        when :comment
-          if match = scan_until(%r!\*/|/\*|\n!) then
-            if match[-1] == ?\n then
-              tokens << [match[0 .. -2], :comment]
-              tokens << ["\n", :content]
-            elsif match[-1] == ?/ then
-              tokens << [match, :comment]
-              comment_nesting_level -= 1
-              if comment_nesting_level == 0 then
-                state = :initial
-              end
-            elsif match[-1] == ?* then
-              tokens << [match, :comment]
-              comment_nesting_level += 1
-            end
-            next
-          end
-
-          # END state = :comment
 
         when :string
-          if string_delimiter == '"""' then
-            if match = scan_until(/"""|\n/) then
-              if match[-1] == ?\n then
-                tokens << [:open, state]
-                tokens << [match[0 .. -2], :content]
-                tokens << [:close, state]
-                tokens << ["\n", :content]
-                next
-              else
-                tokens << [:open, state]
-                tokens << [match[0 .. -4], :content]
-                tokens << ['"""', :delimiter]
-                tokens << [:close, state]
-                string_delimiter = nil
-                state = :initial
-                next
-              end
-            end
-          elsif scan(STRING_CONTENT_PATTERN[string_delimiter])
-            kind = :content
+          if match = scan(STRING_CONTENT_PATTERN[string_delimiter])
+            encoder.text_token match, :content
           elsif match = scan(/["'\/]/)
-            tokens << [match, :delimiter]
-            tokens << [:close, state]
-            string_delimiter = nil
+            encoder.text_token match, :delimiter
+            encoder.end_group state
             state = :initial
-            next
+            string_delimiter = nil
           elsif state == :string && (match = scan(/ \\ (?: #{ESCAPE} | #{UNICODE_ESCAPE} ) /mox))
             if string_delimiter == "'" && !(match == "\\\\" || match == "\\'")
-              kind = :content
+              encoder.text_token match, :content
             else
-              kind = :char
+              encoder.text_token match, :char
             end
-          elsif scan(/\\./m)
-            kind = :content
-          elsif scan(/ \\ | $ /x)
-            tokens << [:close, state]
-            kind = :error
+          elsif match = scan(/\\./m)
+            encoder.text_token match, :content
+          elsif match = scan(/ \\ | $ /x)
+            encoder.end_group state
             state = :initial
+            encoder.text_token match, :error
           else
-            raise_inspect "else case \" reached; %p not handled." % peek(1), tokens
+            raise_inspect "else case \" reached; %p not handled." % peek(1), encoder
           end
 
-          # END state = :string
-
         else
-          raise_inspect 'Unknown state', tokens
+          raise_inspect 'Unknown state', encoder
 
         end
-
-        match ||= matched
-        raise_inspect('Empty token', tokens) unless match
-
+        
         last_token_dot = match == '.'
-
-        tokens << [match, kind]
-
+        
       end
 
       if state == :string
-        tokens << [:close, state]
+        encoder.end_group state
       end
 
-      tokens
+      encoder
     end
 
   end
 
 end
 end
-
-# vim:set sw=2 ts=2:

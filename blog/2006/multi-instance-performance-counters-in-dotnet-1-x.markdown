@@ -41,7 +41,7 @@ private static void SetMultiInstance(string categoryName, bool multiInstance)
 {
     string key = string.Format(
         CultureInfo.InvariantCulture, 
-        @"SYSTEM\CurrentControlSet\Services\{0}\Performance", 
+        "SYSTEM\\CurrentControlSet\\Services\\{0}\\Performance", 
         categoryName);
     using (RegistryKey categoryKey = Registry.LocalMachine.OpenSubKey(key, true))
     {
@@ -81,7 +81,7 @@ private static void SetCategoryOptions(string categoryName, int categoryOptions)
 {
     string key = string.Format(
         CultureInfo.InvariantCulture,
-        @"SYSTEM\CurrentControlSet\Services\{0}\Performance",
+        "SYSTEM\\CurrentControlSet\\Services\\{0}\\Performance",
         categoryName);
     using (RegistryKey categoryKey = Registry.LocalMachine.OpenSubKey(key, true))
     {
@@ -123,7 +123,7 @@ public class MyInstaller : Installer
     {
         string key = string.Format(
             CultureInfo.InvariantCulture,
-            @"SYSTEM\CurrentControlSet\Services\{0}\Performance",
+            "SYSTEM\\CurrentControlSet\\Services\\{0}\\Performance",
             categoryName);
         using (RegistryKey categoryKey = Registry.LocalMachine.OpenSubKey(key, true))
         {
@@ -139,7 +139,7 @@ public class MyInstaller : Installer
     {
         string key = string.Format(
             CultureInfo.InvariantCulture,
-            @"SYSTEM\CurrentControlSet\Services\{0}\Performance",
+            "SYSTEM\\CurrentControlSet\\Services\\{0}\\Performance",
             categoryName);
         using (RegistryKey categoryKey = Registry.LocalMachine.OpenSubKey(key, true))
         {

@@ -6,6 +6,7 @@ require 'builder'
 require 'sinatra/base'
 require './lib/coderay/scanners/csharp'
 require './lib/coderay/scanners/scala'
+require './lib/coderay/scanners/vb'
 require './lib/haml/filters/markdown'
 require './lib/kramdown/document'
 

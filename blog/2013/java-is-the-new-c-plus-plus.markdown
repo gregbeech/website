@@ -7,7 +7,7 @@ Back in the early 1990s Java was conceived as an alternative to C++ which would 
 
 When Java was released in 1996, I wasn't a developer. In fact, I think at that point the most code I had written was:
 
-~~~python
+~~~vb
 10 PRINT "HELLO WORLD"
 20 GOTO 10
 30 END
@@ -37,7 +37,7 @@ What's more ridiculous is that there _are_ some hacks in Java to make arrays app
 
 Sticking with the array theme, in Java it's possible to check whether a variable contains an array of integers at runtime by writing `myVar instanceof Integer[]`. However, if you want to check whether it contains a list of integers then you're shit out of luck, because writing `myVar instanceof List<Integer>` will just see the compiler come back with an error that it's an illegal type for `instanceof`. You actually can only check that it's a list of _something_ by writing `myVar instanceof List<?>` because generic type information is erased at compile time and so doesn't exist at runtime. You might not think this is such a big deal, but it causes significant complexity in some libraries; want to explain [how to deserialize JSON to a generic type](http://wiki.fasterxml.com/JacksonPolymorphicDeserialization#A5.1_Missing_type_information_on_Serialization) to a beginner?
 
-We've barely covered primitive types and basic collections and already we're up to paragraphs on the needless complexities inherent in Java. We haven't even got onto the different types of variance. An, yes, variance. Java offers two types of generic variance which I'm going to call "broken" variance and "where's that book again?" variance.
+We've barely covered primitive types and basic collections and already we're up to paragraphs on the needless complexities inherent in Java. We haven't even got onto the different types of variance. Ah, yes, variance. Java offers two types of generic variance which I'm going to call "broken" variance and "where's that book again?" variance.
 
 "Broken" variance is demonstrated by arrays, where their covariance and mutability can lead to some surprising errors at runtime that can't be caught by the type system:
 
@@ -60,23 +60,39 @@ Needless to say, in non-broken languages that support non-broken variance, this 
 IEnumerable<object> items = new List<string>(); // in C# this is totally ok
 ~~~
 
+You probably didn't need the book to work out why those types aren't compatible, but you might for this. How do you declare a method to get the maximum item from a sequence, which works if the items implement the `Comparable<T>` interface anywhere in their inheritance chain (i.e. it could be implemented on their base class)?
+
+~~~java
+
+~~~
+
+I'm not even kidding, that's lifted straight out of Joshua Bloch's "Effective Java" (a great book, incidentally) as an example of the right way to do things. It's so complex that it has actually broken the Markdown code block parser in Sublime Text, and I've had to remove it temporarily to be able to continue typing! Want to see the same thing with the same variance in C#?
+
+~~~csharp
+public static T Max(IEnumerable<T> items) where T : IComparable<T> {
+    // ...
+}
+~~~
+
+The C# version just works because variance is defined on the interfaces themselves, and so anywhere the interfaces are used they automatically 'do the right thing'. Given you _use_ interfaces a lot more frequently than you _declare_ them, having variance defined on declaration rather than usage makes a lot more sense, and is actually far easier because you only need to consider one interface at a time rather than the composition of all the interfaces together.
+
 ---
 
 TODO: Checked exceptions are about the worst feature in any language, ever, e.g. JCA, which makes you catch exceptions documented as not being able to occur.
 
 ---
 
-So let's sum up where we are: Primitives that aren't objects, except when they are. Arrays that aren't iterable, but language constructs that can treat them as such. Types that exist at compile time but not at runtime. Two types of variance, both significantly different, both broken, and one of which is so complex that virtually nobody actually understands it. And an exception system that forces advanced concepts on people immediately.
+So let's sum up where we are: Primitives that aren't objects, except when they are. Arrays that aren't iterable, but language constructs that can treat them as such. Types that exist at compile time but not at runtime. Two types of variance, both significantly different, both broken, and one of which that spreads its complexity to everywhere it's used. And an exception system that forces advanced concepts on people immediately.
 
 I feel like I've barely scratched the surface here, but actually that's most of what Java as a language has to offer. I guess I could talk about the fact that `protected` allows both derived types _and_ types in the same package to access the members, or that package-private doesn't allow sub-packages to access types. But that would just be rubbing salt into the wounds.
 
 A language that's easy to learn? I can't think of any modern language that's more needlessly complex.
 
-Let's take a look at what people really mean when they say other languages are harder to learn: that they can do more. I'll take a simple example that I needed to do this week, which was prepend a single zero-byte to an array. In Java your code is going to look something like this:
+Let's take a look at what people really mean when they say other languages are harder to learn: They can do more. I'll take a simple example that I needed to do this week, which was prepend a single zero-byte to an array. In Java your code is going to look something like this:
 
 ~~~java
 byte[] temp = new byte[bytes.length + 1];
-System.arraycopy(bytes, 0, temp, 1, bytes.length);
+System.arraycopy(bytes, 0, temp, 1, temp.length);
 bytes = temp;
 ~~~
 
@@ -88,21 +104,42 @@ bytes +:= 0
 
 Yeah, I'm not kidding. Those code fragments are equivalent.
 
-I know what you're thinking though. The Scala code looks more cryptic. But much like `a += b` expands to `a = a + b` in Java, `a +:= b` expands to `a = a.+:(b)` in Scala, where the part before the `=` is the method name (`+:` is a legal method name in Scala). All you have to remember is a universal expansion rule, which is arguably simpler than the localised expansion rule in Java.
+I know what you're thinking though. The Scala code looks more cryptic. But much like `a += b` expands to `a = a + b` in Java, `a +:= b` expands to `a = a.+:(b)` in Scala, where the part before the `=` is the method name (`+:` is a legal method name in Scala). All you have to remember is a universal expansion rule, which is arguably simpler than the localised expansion rule in Java. Any you don't need to refer to the documentation to see which order the parameters for the `arraycopy` method come in, or make an off-by-one error by carelessly using the wrong array length (did you spot that?).
 
-So after a while, the extra power stops being cryptic, and starts becoming natural. I certainly find it easier because it's regular, unlike the Java code where I had to refer to the documentation to see which order the parameters for `arraycopy` come in, and nearly made an off-by-one error while typing it.
+You're probably thinking that's a contrived example, so let's take another one - produce the running total of an array of numbers, which is the kind of thing you might want to do for a receipt or on a summary screen. In Java you're looking at something like this (with no deliberate errors this time, I promise):
 
+~~~java
+int[] runningTotals = new int[numbers.length];
+int currentTotal = 0;
+for (int i = 0; i < numbers.length; i++) {
+    currentTotal += numbers[i];
+    runningTotals[i] = currentTotal;
+}
+~~~
 
+Whereas in Scala it's rather simpler:
 
+~~~scala
+val runningTotals = numbers.scanLeft(0)(_ + _)
+~~~
 
+But again, it's _cryptic_, right? Well, no, not really. Once you're able to recognise common Scala idioms and functions you can read this in your head as "Scan the array from the left, start with zero, and make each new value by adding the original value to the accumulated value.", which is probably just about how you'd describe the solution in English. It certainly reads better than "Create a new array of the same length, start with zero for the current total and the index into the array, while the index into the array is less than the array length, add the value at the current index to the current total and store that in the running totals at the current index, then increment the index into the array.".
 
+If you're still reading and you've managed to hold off being offended for long enough to actually consider some of the points I've made, you're probably starting to thing that maybe, just _maybe_, Java isn't the language you want to spend the next God-knows-how-many years coding in. Pretty much the same position that hordes of C++ developers found themselves in all the way back in 1996.
 
+The problem was that not much from C++ was salvageable when they moved to Java. Sure, all the language-agnostic skills such as functional decomposition, object-oriented design and the like were pretty transferable, but knowledge of all the class libraries and frameworks: gone. If you've been spent a lot of effort learning all the Java libraries and frameworks and IDEs and so on, you don't want to be in the same boat as those C++ guys and get reset back to scratch.
 
+The thing is, you don't have to be.
 
----
-not everything is bad - the virtual machine (excluding its lack of generic support), the package system, the frameworks, all sensible things that are recognised as good ideas. (there's almost certainly prior art, but i can't be arsed to research)
+Pretty much everything I've picked on in this article has been problems with Java the _language_, not Java the _platform_. Java as a platform has a lot going for it. The virtual machine is stable, fast and widely supported. The packaging and deployment system makes a fair amount of sense. The frameworks and class libraries are extensive. What if you could retain _all_ your knowledge of _all_ of these things, and just switch to a [language](http://clojure.org/) [that](http://groovy.codehaus.org/) [made](http://www.scala-lang.org/) [them](http://jruby.org/) [more](http://www.jython.org/) [pleasant](https://developer.mozilla.org/en/docs/Rhino) to use?
 
-but you don't need *java* to use them.
+Which one?
 
+Well, that's the million dollar question.
 
+Although, as you've probably guessed from the code samples above, my money is on Scala. It's object-oriented and strongly typed, unlike most other popular JVM languages, which will make Java developers feel right at home. In fact, it's pretty easy to write Java-like code in Scala, just with fewer lines. The syntax is kind of C-like if you squint. Well, it's got curly braces. And you can put semi-colons in there if you really want. And although it favours a functional and immutable style, you can mix and match imperative and mutable code as appropriate without feeling like you're being scolded for it.
+
+The only thing standing in it's way is you've got to read [a book](http://www.amazon.co.uk/Programming-In-Scala-2nd-Edition/dp/0981531644) to learn it, because some of the syntax and idioms are fairly non-obvious until you know them. And as Steve Yegge pointed out [LINK?], most developers are happy to read about frameworks until the cows come home, but ask them to read a book about a new language and they'll look at you as if you're insane.
+
+That's OK though. You've read this far, so you're probably not most developers. Go pick up a copy of that book from somewhere (if you're a Safari Books Online subscriber it's available to you right now) and spend a couple of weeks working through it. I guarantee you'll start looking at Java in a whole different way, and you'll finally understand that [Blub paradox](http://www.paulgraham.com/avg.html) article.
 
