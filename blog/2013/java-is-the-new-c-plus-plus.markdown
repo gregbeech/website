@@ -29,11 +29,11 @@ Let's start with primitives such as `int` and `byte` which aren't objects, and t
 
 This might not seem so bad, as nowadays Java will auto-box your `int` to an `Integer` if you try to add it to a collection. But if you try and call a method on it, e.g. `(3).toString()`, then it won't auto-box it and you'll get a compiler error, so we're now in an inconsistent world where primitives are sometimes treated like objects and other times not. And while it's easy to convert `int` to `Integer`, you're back to a `for` loop if you want to convert `int[]` to `Integer[]`.
 
-While we're on the subject of arrays, although generally you find the number of elements in a Java collection using the `size()` method, the array type - not being a real object and thus not supporting methods - has a `length` field instead. Strings aren't sure whether they're an array or a collection of characters, so they hedge their bets and use a `length()` method.
+Now we're onto the subject of arrays, although generally you find the number of elements in a Java collection using the `size()` method, the array type - not being a real object and thus not supporting methods - has a `length` field instead. Strings aren't sure whether they're an array or a collection of characters, so they hedge their bets and use a `length()` method.
 
 That isn't the biggest array WTF in Java though, because that's waiting for you when you try to pass an array of `T` to a method that's expecting an `Iterable<T>` and you get a compiler error complaining that they're incompatible types. I'm sorry, but in what world is an array _not_ iterable? Yeah, I know it's because arrays are special types that aren't really objects and don't really exist, but that's no excuse - it's the same in .NET but at least Microsoft put a load of hacks in their VM to make scenarios that _ought_ to work _actually_ work.
 
-What's more ridiculous is that there _are_ some hacks in Java to make arrays appear more like their real-object collection cousins. For example, the "modern" `for` loop (yeah, that does seem to be its real name) can iterate over both `T[]` and `Iterable<T>` even though neither are assignment compatible nor share any common interface.
+What's more ridiculous is that there _are_ some hacks in Java to make arrays appear more like their real-object collection cousins. For example, the "smart" `for` loop (yeah, that does seem to be its real name) can iterate over both `T[]` and `Iterable<T>` even though neither are assignment compatible nor share any common interface.
 
 Sticking with the array theme, in Java it's possible to check whether a variable contains an array of integers at runtime by writing `myVar instanceof Integer[]`. However, if you want to check whether it contains a list of integers then you're shit out of luck, because writing `myVar instanceof List<Integer>` will just see the compiler come back with an error that it's an illegal type for `instanceof`. You actually can only check that it's a list of _something_ by writing `myVar instanceof List<?>` because generic type information is erased at compile time and so doesn't exist at runtime. You might not think this is such a big deal, but it causes significant complexity in some libraries; want to explain [how to deserialize JSON to a generic type](http://wiki.fasterxml.com/JacksonPolymorphicDeserialization#A5.1_Missing_type_information_on_Serialization) to a beginner?
 
@@ -48,47 +48,65 @@ animals[0] = new Turtle(); // BOOM!
 
 This is broken because [it should always be legal to put a Turtle into an array of animals](http://blogs.msdn.com/b/ericlippert/archive/2007/10/17/covariance-and-contravariance-in-c-part-two-array-covariance.aspx).
 
-"Where's that book again?" variance is demonstrated by pretty much all other variance in Java, where it's so unintuitive you can really only figure out why things aren't doing what you expect, and how to fix it, by going back to the reference manual. For example, you'd expect a generic iterator to be contravariant as types only come 'out', and thus that you'd be able to treat an `List<String>` as an `Iterable<Object>`, but:
+"Where's that book again?" variance is demonstrated by pretty much all other variance in Java, where it's so unintuitive you can really only figure out why things aren't doing what you expect, and how to fix it, by going back to the reference manual. For example, you'd expect a generic iterator to be covariant as types only come 'out', and therefore that you'd be able to treat a `List<String>` as an `Iterable<Object>`, but:
 
 ~~~java
 Iterable<Object> items = new ArrayList<String>(); // error: incompatible types
 ~~~
 
-Needless to say, in non-broken languages that support non-broken variance, this stuff just works:
-
-~~~csharp
-IEnumerable<object> items = new List<string>(); // in C# this is totally ok
-~~~
-
-You probably didn't need the book to work out why those types aren't compatible, but you might for this. How do you declare a method to get the maximum item from a sequence, which works if the items implement the `Comparable<T>` interface anywhere in their inheritance chain (i.e. it could be implemented on their base class)?
+If you want to get this to compile then you have to change the declaration of the iterable to indicate its variance:
 
 ~~~java
-
+Iterable<? extends Object> items = new ArrayList<String>();
 ~~~
 
-I'm not even kidding, that's lifted straight out of Joshua Bloch's "Effective Java" (a great book, incidentally) as an example of the right way to do things. It's so complex that it has actually broken the Markdown code block parser in Sublime Text, and I've had to remove it temporarily to be able to continue typing! Want to see the same thing with the same variance in C#?
+You probably didn't need the book to work out how to fix that one, but you might for this. How do you declare a method to get the maximum item from a sequence, which works if the items implement the `Comparable<T>` interface anywhere in their inheritance chain (i.e. it could be implemented on their base class)?
+
+Don't peek...
+
+Did you get it?
+
+~~~java
+public static <T extends Comparable<? super T>> T max(Iterable<? extends T> items) {
+    // ...
+    return null;
+}
+~~~
+
+I'm not even kidding, that's lifted straight out of Joshua Bloch's "Effective Java" (a great book, incidentally) as an example of the right way to do things. It's so complex that it has actually broken the Markdown code block parser in Sublime Text, and I've had to remove it temporarily to be able to continue typing!
+
+Let's see the C# versions of these examples with the same variance:
 
 ~~~csharp
+IEnumerable<object> items = new List<string>();
+
 public static T Max(IEnumerable<T> items) where T : IComparable<T> {
     // ...
 }
 ~~~
 
-The C# version just works because variance is defined on the interfaces themselves, and so anywhere the interfaces are used they automatically 'do the right thing'. Given you _use_ interfaces a lot more frequently than you _declare_ them, having variance defined on declaration rather than usage makes a lot more sense, and is actually far easier because you only need to consider one interface at a time rather than the composition of all the interfaces together.
+These just work because in C# because variance is defined on the interfaces themselves, and so anywhere the interfaces are used they automatically 'do the right thing'. Given you _use_ interfaces a lot more frequently than you _declare_ them, having variance defined on declaration makes a lot more sense than on usage, and is far easier because you only need to consider one interface at a time rather than the composition of all the interfaces together.
 
----
-
-TODO: Checked exceptions are about the worst feature in any language, ever, e.g. JCA, which makes you catch exceptions documented as not being able to occur.
-
----
-
-So let's sum up where we are: Primitives that aren't objects, except when they are. Arrays that aren't iterable, but language constructs that can treat them as such. Types that exist at compile time but not at runtime. Two types of variance, both significantly different, both broken, and one of which that spreads its complexity to everywhere it's used. And an exception system that forces advanced concepts on people immediately.
-
-I feel like I've barely scratched the surface here, but actually that's most of what Java as a language has to offer. I guess I could talk about the fact that `protected` allows both derived types _and_ types in the same package to access the members, or that package-private doesn't allow sub-packages to access types. But that would just be rubbing salt into the wounds.
+So let's sum up where we are: Primitives that aren't objects, except when they are. Arrays that aren't iterable, but language constructs that can treat them as such. Types that exist at compile time but not at runtime. Two types of variance, one of which is broken, and the other which requires you to think about covariance and contravariance every time you use it.
 
 A language that's easy to learn? I can't think of any modern language that's more needlessly complex.
 
-Let's take a look at what people really mean when they say other languages are harder to learn: They can do more. I'll take a simple example that I needed to do this week, which was prepend a single zero-byte to an array. In Java your code is going to look something like this:
+I feel like I've barely scratched the surface here, but actually that's most of what Java as a language has to offer. I guess I could also go into the fact that checked exceptions are one of the most broken language features ever conceived, but you know that already and you're probably sick of writing shit like:
+
+~~~ java
+Cipher cipher;
+try {
+    cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+} catch (NoSuchAlgorithmException e) {
+    throw new RuntimeException("AES/CBC is documented as always existing.", e);
+} catch (NoSuchPaddingException e) {
+    throw new RuntimeException("PKCS5Padding is documented as always existing", e);
+}
+~~~
+
+I sure as hell am.
+
+But let's not dwell on Java's shortcomings in isolation any longer. Let's take a look at what people really mean when they say other languages are harder to learn: They can do more. I'll take a simple example that I needed to do this week, which was prepend a single zero-byte to an array. In Java your code is going to look something like this:
 
 ~~~java
 byte[] temp = new byte[bytes.length + 1];
@@ -125,21 +143,72 @@ val runningTotals = numbers.scanLeft(0)(_ + _)
 
 But again, it's _cryptic_, right? Well, no, not really. Once you're able to recognise common Scala idioms and functions you can read this in your head as "Scan the array from the left, start with zero, and make each new value by adding the original value to the accumulated value.", which is probably just about how you'd describe the solution in English. It certainly reads better than "Create a new array of the same length, start with zero for the current total and the index into the array, while the index into the array is less than the array length, add the value at the current index to the current total and store that in the running totals at the current index, then increment the index into the array.".
 
+I know you're still not convinced yet, so let's try a different tack. Every Java developer is familiar with the verbosity that came from dealing with resources that need to be closed after use in Java before version 7:
+
+~~~ java
+BufferedReader reader = new BufferedReader(new FileReader(path));
+try {
+    // ...
+} finally {
+    reader.close();
+}
+~~~
+
+They were all pretty happy when a little bit of syntactic sugar was eventually introduced in Java 7 which let them achieve the same result with fewer lines of code. Well, I assume they were happy anyway.
+
+~~~ java
+try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+    // ...
+}
+~~~
+
+In other languages, you don't need to wait fifteen years for the language designers to get their asses in gear, you can just add the feature yourself. Here's the same try-with-resources concept expressed in Scala, which is duck-typed to work on anything with a `close` method; no need to add an `AutoCloseable` interface here:
+
+~~~ scala
+// we can't call it 'try' as that's a keyword, so we'll go with 'using' in homage to C#
+def using[R, T <: { def close(): Unit }](resource: T)(func: T => R): R =
+  try { func(resource) } 
+  finally { resource.close() }
+~~~
+
+It can now be used in much the same way as the Java one, and looks reasonably like a built-in language construct:
+
+~~~ scala
+using (new BufferedReader(new FileReader(path))) { reader =>
+  // ...
+}
+~~~
+
+Plus the really cool thing with this version is that say you want to return something from within the `using` block, because this is an an expression rather than a statement, you can just assign the result directly. This is something I've _often_ wanted to do when writing C#:
+
+~~~ scala
+
+val firstLine = using (new BufferedReader(new FileReader(path))) { reader =>
+  reader.readLine();
+}
+~~~
+
+What's the big deal though? Java 7 has this language feature built in now so you're not gaining anything with Scala, right? Well, because the Scala approach is not dependent on a specific language feature you can apply it to scenarios other than just closing resources; for example you could create `borrow` helper that borrows resources from a pool and returns them to it at the end, or a `cached` helper where you check a cache for the resource and, if it isn't found, run the block to get it and then add it to the cache. In fact, you can add a helper like this for _any_ situation where you have 'before' and 'after' actions. And believe me, this is barely scratching the surface of what you can do with higher order functions.
+
 If you're still reading and you've managed to hold off being offended for long enough to actually consider some of the points I've made, you're probably starting to thing that maybe, just _maybe_, Java isn't the language you want to spend the next God-knows-how-many years coding in. Pretty much the same position that hordes of C++ developers found themselves in all the way back in 1996.
 
-The problem was that not much from C++ was salvageable when they moved to Java. Sure, all the language-agnostic skills such as functional decomposition, object-oriented design and the like were pretty transferable, but knowledge of all the class libraries and frameworks: gone. If you've been spent a lot of effort learning all the Java libraries and frameworks and IDEs and so on, you don't want to be in the same boat as those C++ guys and get reset back to scratch.
+The problem was that not much from C++ was salvageable when they moved to Java. Sure, all the language-agnostic skills such as functional decomposition, object-oriented design and the like were pretty transferable, but knowledge of all the class libraries and frameworks: gone. If you've spent a lot of effort learning all the Java libraries and frameworks and IDEs and so on, you don't want to be in the same boat as those C++ guys and get reset back to scratch.
 
 The thing is, you don't have to be.
 
-Pretty much everything I've picked on in this article has been problems with Java the _language_, not Java the _platform_. Java as a platform has a lot going for it. The virtual machine is stable, fast and widely supported. The packaging and deployment system makes a fair amount of sense. The frameworks and class libraries are extensive. What if you could retain _all_ your knowledge of _all_ of these things, and just switch to a [language](http://clojure.org/) [that](http://groovy.codehaus.org/) [made](http://www.scala-lang.org/) [them](http://jruby.org/) [more](http://www.jython.org/) [pleasant](https://developer.mozilla.org/en/docs/Rhino) to use?
+Virtually everything I've picked on in this article has been problems with Java the _language_, not Java the _platform_. Java as a platform has a lot going for it. The virtual machine is stable, fast and widely supported. The packaging and deployment system makes a fair amount of sense. The frameworks and class libraries are extensive. What if you could retain _all_ your knowledge of _all_ of these things, and just switch to a [language](http://clojure.org/) [that](http://groovy.codehaus.org/) [made](http://www.scala-lang.org/) [them](http://jruby.org/) [more](http://www.jython.org/) [pleasant](https://developer.mozilla.org/en/docs/Rhino) to use?
 
-Which one?
+That'd be pretty cool.
 
-Well, that's the million dollar question.
+But which language to choose?
 
-Although, as you've probably guessed from the code samples above, my money is on Scala. It's object-oriented and strongly typed, unlike most other popular JVM languages, which will make Java developers feel right at home. In fact, it's pretty easy to write Java-like code in Scala, just with fewer lines. The syntax is kind of C-like if you squint. Well, it's got curly braces. And you can put semi-colons in there if you really want. And although it favours a functional and immutable style, you can mix and match imperative and mutable code as appropriate without feeling like you're being scolded for it.
+Well, that's the billion dollar question.
 
-The only thing standing in it's way is you've got to read [a book](http://www.amazon.co.uk/Programming-In-Scala-2nd-Edition/dp/0981531644) to learn it, because some of the syntax and idioms are fairly non-obvious until you know them. And as Steve Yegge pointed out [LINK?], most developers are happy to read about frameworks until the cows come home, but ask them to read a book about a new language and they'll look at you as if you're insane.
+As you may have guessed from the code samples above, my money is on Scala. It's object-oriented and strongly typed, unlike most other popular JVM languages, which will make Java developers feel right at home. In fact, it's pretty easy to write Java-like code in Scala, just with fewer lines. The syntax is kind of C-like if you squint. Well, it's got curly braces. And you can put semi-colons in there if you really want. And although it favours a functional and immutable style, you can mix and match imperative and mutable code as appropriate without feeling like you're being scolded for it.
 
-That's OK though. You've read this far, so you're probably not most developers. Go pick up a copy of that book from somewhere (if you're a Safari Books Online subscriber it's available to you right now) and spend a couple of weeks working through it. I guarantee you'll start looking at Java in a whole different way, and you'll finally understand that [Blub paradox](http://www.paulgraham.com/avg.html) article.
+You're still stuck with generic type erasure. Nothing can fix that mistake other than an updated bytecode format, and hell isn't freezing over any time soon. But hey, nothing's perfect.
+
+The only thing standing in Scala's way is you've got to read [a book](http://www.amazon.co.uk/Programming-In-Scala-2nd-Edition/dp/0981531644) to learn it, because some of the syntax and idioms are fairly non-obvious until you know them. And as Steve Yegge frequently points out, most developers are happy to read about frameworks until the cows come home, but ask them to read a book about a new language and they'll look at you as if you're insane.
+
+That's OK though. You've read this far, so you're probably not most developers. Go pick up a copy of that book from somewhere (if you're a Safari Books Online subscriber it's available to you right now) and spend a few weeks working through it. I guarantee you'll start looking at Java in a whole different way, and you'll finally understand that [Blub paradox](http://www.paulgraham.com/avg.html) article.
 

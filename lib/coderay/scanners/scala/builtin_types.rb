@@ -388,7 +388,7 @@ module Scanners
       TreeSelectionModel TreeSet TreeUI TreeWillExpandListener TrustAnchor TrustManager TrustManagerFactory
       TrustManagerFactorySpi Type TypeInfoProvider TypeNotPresentException Types TypeVariable UID UIDefaults
       UIManager UIResource UndeclaredThrowableException UndoableEdit UndoableEditEvent UndoableEditListener
-      UndoableEditSupport UndoManager UnexpectedException UnicastRemoteObject UnknownError
+      UndoableEditSupport UndoManager UnexpectedException UnicastRemoteObject Unit UnknownError
       UnknownFormatConversionException UnknownFormatFlagsException UnknownGroupException UnknownHostException
       UnknownObjectException UnknownServiceException UnmappableCharacterException UnmarshalException
       UnmodifiableClassException UnmodifiableSetException UnrecoverableEntryException
