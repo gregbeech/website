@@ -18,7 +18,7 @@
       /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
       var disqus_shortname = 'gregbeech';
       var disqus_identifier = '#{request.path_info}';
-      var disqus_title = '#{title}';
+      var disqus_title = '#{title.gsub(/'/, "\\'")}';
       var disqus_url = 'http://gregbee.ch/#{request.path_info}';
 
       /* * * DON'T EDIT BELOW THIS LINE * * */
