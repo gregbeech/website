@@ -2,13 +2,14 @@
 !!!
 %html
   %head
-    %title #{title} - gregbee.ch
-    %link(rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic" )
+    %title #{title} - greg.beech
+    %link(rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:300,700,300italic")
     %link(rel="stylesheet" href="/css/styles.css")
     %link(rel="stylesheet" href="/css/coderay.css")
     %link(rel="shortcut icon" href="favicon.ico")
     %link(rel="openid.server" href="http://www.myopenid.com/server")
     %link(rel="openid.delegate" href="http://greg.beech.myopenid.com/")
+    %meta(property="og:image" content="http://gregbee.ch/share.jpeg")
   %body
     #wrapper
       %header
@@ -16,7 +17,7 @@
           %ul
             - area = (area rescue nil)
             %li.home
-              %a gregbee.ch
+              %a greg.beech
             %li{ class: (area == 'Blog' ? 'current' : nil) } 
               %a{ href: '/blog' } /blog
             %li{ class: (area == 'CV' ? 'current' : nil) } 

@@ -57,7 +57,7 @@ Iterable<Object> items = new ArrayList<String>(); // error: incompatible types
 If you want to get this to compile then you have to change the declaration of the iterable to indicate its variance:
 
 ~~~java
-Iterable<? extends Object> items = new ArrayList<String>();
+Iterable< ? extends Object> items = new ArrayList<String>();
 ~~~
 
 You probably didn't need the book to work out how to fix that one, but you might for this. How do you declare a method to get the maximum item from a sequence, which works if the items implement the `Comparable<T>` interface anywhere in their inheritance chain (i.e. it could be implemented on their base class)?
@@ -67,7 +67,7 @@ Don't peek...
 Did you get it?
 
 ~~~java
-public static <T extends Comparable<? super T>> T max(Iterable<? extends T> items) {
+public static <T extends Comparable< ? super T>> T max(Iterable< ? extends T> items) {
     // ...
     return null;
 }
@@ -85,7 +85,7 @@ public static T Max(IEnumerable<T> items) where T : IComparable<T> {
 }
 ~~~
 
-These just work because in C# because variance is defined on the interfaces themselves, and so anywhere the interfaces are used they automatically 'do the right thing'. Given you _use_ interfaces a lot more frequently than you _declare_ them, having variance defined on declaration makes a lot more sense than on usage, and is far easier because you only need to consider one interface at a time rather than the composition of all the interfaces together.
+These just work in C# because variance is defined on the interfaces themselves, and so anywhere the interfaces are used they automatically 'do the right thing'. Given you _use_ interfaces a lot more frequently than you _declare_ them, having variance defined on declaration makes a lot more sense than on usage, and is far easier because you only need to consider one interface at a time rather than the composition of all the interfaces together.
 
 So let's sum up where we are: Primitives that aren't objects, except when they are. Arrays that aren't iterable, but language constructs that can treat them as such. Types that exist at compile time but not at runtime. Two types of variance, one of which is broken, and the other which requires you to think about covariance and contravariance every time you use it.
 
@@ -93,7 +93,7 @@ A language that's easy to learn? I can't think of any modern language that's mor
 
 I feel like I've barely scratched the surface here, but actually that's most of what Java as a language has to offer. I guess I could also go into the fact that checked exceptions are one of the most broken language features ever conceived, but you know that already and you're probably sick of writing shit like:
 
-~~~ java
+~~~java
 Cipher cipher;
 try {
     cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
@@ -145,7 +145,7 @@ But again, it's _cryptic_, right? Well, no, not really. Once you're able to reco
 
 I know you're still not convinced yet, so let's try a different tack. Every Java developer is familiar with the verbosity that came from dealing with resources that need to be closed after use in Java before version 7:
 
-~~~ java
+~~~java
 BufferedReader reader = new BufferedReader(new FileReader(path));
 try {
     // ...
@@ -156,7 +156,7 @@ try {
 
 They were all pretty happy when a little bit of syntactic sugar was eventually introduced in Java 7 which let them achieve the same result with fewer lines of code. Well, I assume they were happy anyway.
 
-~~~ java
+~~~java
 try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
     // ...
 }
@@ -164,7 +164,7 @@ try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
 
 In other languages, you don't need to wait fifteen years for the language designers to get their asses in gear, you can just add the feature yourself. Here's the same try-with-resources concept expressed in Scala, which is duck-typed to work on anything with a `close` method; no need to add an `AutoCloseable` interface here:
 
-~~~ scala
+~~~scala
 // we can't call it 'try' as that's a keyword, so we'll go with 'using' in homage to C#
 def using[R, T <: { def close(): Unit }](resource: T)(func: T => R): R =
   try { func(resource) } 
@@ -173,7 +173,7 @@ def using[R, T <: { def close(): Unit }](resource: T)(func: T => R): R =
 
 It can now be used in much the same way as the Java one, and looks reasonably like a built-in language construct:
 
-~~~ scala
+~~~scala
 using (new BufferedReader(new FileReader(path))) { reader =>
   // ...
 }
@@ -181,7 +181,7 @@ using (new BufferedReader(new FileReader(path))) { reader =>
 
 Plus the really cool thing with this version is that say you want to return something from within the `using` block, because this is an an expression rather than a statement, you can just assign the result directly. This is something I've _often_ wanted to do when writing C#:
 
-~~~ scala
+~~~scala
 
 val firstLine = using (new BufferedReader(new FileReader(path))) { reader =>
   reader.readLine();
@@ -190,6 +190,38 @@ val firstLine = using (new BufferedReader(new FileReader(path))) { reader =>
 
 What's the big deal though? Java 7 has this language feature built in now so you're not gaining anything with Scala, right? Well, because the Scala approach is not dependent on a specific language feature you can apply it to scenarios other than just closing resources; for example you could create `borrow` helper that borrows resources from a pool and returns them to it at the end, or a `cached` helper where you check a cache for the resource and, if it isn't found, run the block to get it and then add it to the cache. In fact, you can add a helper like this for _any_ situation where you have 'before' and 'after' actions. And believe me, this is barely scratching the surface of what you can do with higher order functions.
 
+OK, one last one. Say you want to create a basic immutable 'property holder' class style in Java, which is a fairly common requirement, you're going to need to write something like this:
+
+~~~ java
+class Person {  
+    private final String name;
+    private final int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getAge() {
+        return this.age;
+    }
+}
+~~~
+
+And the same in Scala?
+
+~~~ scala
+case class Person(name: String, age: Integer)
+~~~
+
+Well, actually, the Scala version doesn't have quite the same functionality... The compiler will also generate a `toString` method which pretty-prints the values, and compliant `equals` and `hashCode` methods. So it's a significantly more functional class in _quite_ a lot less code. And if you want mutability, just prefix the argument names with `var` and it'll generate the setters too.
+
+You can't even say the Scala version is cryptic this time, either.
+ 
 If you're still reading and you've managed to hold off being offended for long enough to actually consider some of the points I've made, you're probably starting to thing that maybe, just _maybe_, Java isn't the language you want to spend the next God-knows-how-many years coding in. Pretty much the same position that hordes of C++ developers found themselves in all the way back in 1996.
 
 The problem was that not much from C++ was salvageable when they moved to Java. Sure, all the language-agnostic skills such as functional decomposition, object-oriented design and the like were pretty transferable, but knowledge of all the class libraries and frameworks: gone. If you've spent a lot of effort learning all the Java libraries and frameworks and IDEs and so on, you don't want to be in the same boat as those C++ guys and get reset back to scratch.
@@ -204,11 +236,38 @@ But which language to choose?
 
 Well, that's the billion dollar question.
 
-As you may have guessed from the code samples above, my money is on Scala. It's object-oriented and strongly typed, unlike most other popular JVM languages, which will make Java developers feel right at home. In fact, it's pretty easy to write Java-like code in Scala, just with fewer lines. The syntax is kind of C-like if you squint. Well, it's got curly braces. And you can put semi-colons in there if you really want. And although it favours a functional and immutable style, you can mix and match imperative and mutable code as appropriate without feeling like you're being scolded for it.
+As you may have guessed from the code samples above, my best guess is Scala. It's object-oriented and strongly typed, unlike most other popular JVM languages, which will make Java developers feel right at home. In fact, it's pretty easy to write Java-like code in Scala, just with fewer lines. The syntax is kind of C-like if you squint. Well, it's got curly braces. And you can put semi-colons in there if you really want. And although it favours a functional and immutable style, you can mix and match imperative and mutable code as appropriate without feeling like you're being scolded for it.
 
-You're still stuck with generic type erasure. Nothing can fix that mistake other than an updated bytecode format, and hell isn't freezing over any time soon. But hey, nothing's perfect.
+You're still stuck with generic type erasure and some of the weird side effects that come with it. Nothing can fix that mistake other than an updated bytecode format, and hell isn't freezing over any time soon. But hey, nothing's perfect, and Scala still looks pretty compelling.
 
-The only thing standing in Scala's way is you've got to read [a book](http://www.amazon.co.uk/Programming-In-Scala-2nd-Edition/dp/0981531644) to learn it, because some of the syntax and idioms are fairly non-obvious until you know them. And as Steve Yegge frequently points out, most developers are happy to read about frameworks until the cows come home, but ask them to read a book about a new language and they'll look at you as if you're insane.
+However, there are a few things standing in its way.
 
-That's OK though. You've read this far, so you're probably not most developers. Go pick up a copy of that book from somewhere (if you're a Safari Books Online subscriber it's available to you right now) and spend a few weeks working through it. I guarantee you'll start looking at Java in a whole different way, and you'll finally understand that [Blub paradox](http://www.paulgraham.com/avg.html) article.
+The first, and probably the most significant, is you've got to read [a book](http://www.amazon.co.uk/Programming-In-Scala-2nd-Edition/dp/0981531644) to learn it because some of the syntax and idioms are fairly non-obvious until you know them. And as Steve Yegge frequently points out, most developers are happy to read about frameworks until the cows come home, but ask them to read a book about a new language and they'll look at you as if you're a madman.
+
+I've always found this an odd stance to take. When you're working in an industry where there are so many languages used, how can you _not_ be curious about what they have to offer and why other people might be using them? Even with languages I wouldn't claim to have any knowledge of, I've still probably read a book about them and/or played around with them for a couple of days just to get a bit of a flavour.
+
+That's OK though. You've read this far, so you're probably not most developers. Go pick up a copy of that book from somewhere (if you're a Safari Books Online subscriber it's available to you right now) and spend a few weeks working through it. I guarantee you'll start looking at Java in a whole different way, and - even if nothing else - you'll finally understand that [Blub paradox](http://www.paulgraham.com/avg.html) article.
+
+The second hurdle is the potential impedance mismatch between Scala and the Java-oriented libraries. Although it's easy to consume Java libraries from Scala, there are quite a number of libraries that assume your code will adhere to certain conventions, and may not function correctly - or at all - if it doesn't. 
+
+Perhaps the most common one is the 'Java bean' convention which requires a parameterless constructor, and all fields to be mutable with accessors named according to a `getX` and `setX` convention. Idiomatic Scala code will use immutable objects with a parameterised constructor, and the accessor method naming convention is `x` (getter) and `x_=` (setter), which is clearly significantly different, and means that frameworks like Spring, and serialisation libraries like Jackson are probably going to have issues.
+
+Quite how much of a problem this impedance mismatch will cause I don't know. But it's definitely non-zero, and it could be significant, depending on how much you read into the [infamous email leaked from Yammer](https://gist.github.com/anonymous/1406238). It may be significant enough that it's actually more appropriate to use different frameworks and build systems like Play and SBT which are designed to be more Scala-friendly, reducing the previously hypothesised benefit of platform knowledge transferring directly.
+
+The final hurdle will be the difficulty of getting Scala accepted - or even investigated - as an implementation language by companies due to FUD. That previously mentioned email seeded a lot of it and and I'm not convinced that the [official response](http://eng.yammer.com/scala-at-yammer/), which attempted to rectify the situation by explaining that all languages are crap and Scala was the least crap for some key systems, did much to help. Many companies will simply write Scala off as 'too experimental', 'too complex', 'too different', 'too slow', 'too risky', or any combination of the above.
+
+This will probably be the hardest hurdle of all to overcome, because this decision is typically made by people who haven't done any development in years (if ever) and are unlikely to be swayed away from 'safe' technologies just because it might make the developers more productive. All languages are Turing complete, so how much difference can it make? Why would we move away from trusty Java?
+
+Good question.
+
+And I'm not sure I have a good answer.
+
+Java is an outdated language, but that doesn't mean you can't build great systems with it. Most people consider C++ to be pretty outdated for systems building (that was the starting point for this post, if you can remember back that far) but Facebook use it extensively and it doesn't seem to have held them back too much. And there are some great frameworks (e.g Mule ESB, which we're using to shunt around messages) that use Java primarily as the glue, where it almost certainly makes sense to use it directly rather than try and wedge some other language in there.
+
+I guess the answer is that you need to differentiate between frameworks that you're using because they provide significant value which would require you to write a lot of complex and/or boilerplate code to replace them, and frameworks that you're using to make up for the language deficiencies which in turn _cause_ you to write even more complex and/or boilerplate code to support the framework (e.g. pretty much anything that has a lot of `Factory`, `Manager` or `Provider` classes). If your code is the latter - which a lot of Java code is - then you might be better off using a more modern language.
+
+
+
+
+
 

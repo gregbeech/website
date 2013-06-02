@@ -52,7 +52,7 @@ class MySite < Sinatra::Base
 
   get '/blog/rss' do
     content_type 'application/rss+xml'
-    posts = blog_posts(include_text: true)
+    posts = blog_posts(include_text: true, not_before: Date.now - (365 * 24 * 3600))
     builder do |rss|
       rss.rss version: '2.0' do
         rss.channel do
@@ -96,9 +96,10 @@ class MySite < Sinatra::Base
 
   # ------------------------------------------------------------------------------
 
-  def blog_posts(include_text = false)
+  def blog_posts(include_text = false, not_before = nil)
     posts = Dir.glob('blog/**/*.markdown').map { |filename| blog_post(filename, include_text) }
-    posts.reject! { |post| !post[:date] || post[:date] > Date.today } # only show posts with valid date
+    posts.reject! { |post| !post[:date] || post[:date] > Date.today }
+    posts.reject! { |post| post[:date] < not_before } if not_before 
     posts.sort! { |a, b| b[:date] <=> a[:date] }
   end
 
