@@ -8,6 +8,7 @@
 
 .CodeRay
 {
+    // general code
     .class { color: @symbol }
     .comment { color: @comment; }
     .constant { color: @const; }
@@ -23,4 +24,9 @@
     .reserved { color: @keyword; }
     .string, .string .string, .string .string .string { color: @string; }
     .type { color: @predef; }
+
+    // xml
+    .attribute-name { color: @symbol; }
+    .preprocessor { color: @const; }
+    .tag { color: @keyword; }
 }
