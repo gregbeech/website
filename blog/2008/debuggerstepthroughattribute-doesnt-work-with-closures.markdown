@@ -25,7 +25,7 @@ class Foo
 {
     public static void Run(string s)
     {
-        Action a = () =&gt; Console.WriteLine("Debugger should not stop here. {0}", s);
+        Action a = () => Console.WriteLine("Debugger should not stop here. {0}", s);
         a();
     }
 }

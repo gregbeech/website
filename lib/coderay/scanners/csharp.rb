@@ -20,7 +20,7 @@ module CodeRay
         'operator', 'out', 'params', 'readonly', 'ref', 'return', 'set', 'sizeof',
         'stackalloc', 'struct', 'switch', 'throw', 'try', 'typeof', 'using', 'var',
         'while', 'yield',
-        'where', 'base', 'this'
+        'where', 'base', 'this', 'from', 'select'
       ]  # :nodoc:
       
       PREDEFINED_TYPES = [
