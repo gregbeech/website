@@ -21,11 +21,11 @@ What's even worse is that Java developers know that it's a clumsy, outdated lang
 
 It isn't. Not by a long shot.
 
-Anybody defending Java as a "good enough" language is generally doing so from a position of knowing _only_ Java and not wanting to have to learn anything else. This only further reinforces my opinion that if anybody describes themselves as an "X developer" you can replace "X" with "average" or "lazy" and have a reasonable probability of being correct. This applies for pretty much any value of X by the way; not just Java. If you don't care about the language you use every day then it's hard to believe you're going to care much about what you produce with it.
+Anybody defending Java as a "good enough" language is generally doing so from a position of knowing _only_ Java and not wanting to have to learn anything else. This only further reinforces my opinion that if anybody describes themselves as an "X developer" you can replace "X" with "average" and have a reasonable probability of being correct. This applies for pretty much any value of X by the way; not just Java. If you don't care about the language you use every day then it's hard to believe you're going to care much about what you produce with it.
 
 The last stand of the Java developer when trying to defend the language is that at least it's easy to learn. But that isn't true either. What they mean is that because Java has so little expressive power that there isn't much in the way of language features to learn, which _is_ true, but Java still goes out of its way to make the few concepts it can express appear complex.
 
-Let's start with primitives such as `int` and `byte` which aren't objects, and their counterparts `Integer` and `Byte` which are. Because Java isn't really an object-oriented language, if you want to have an integer that is an object you have to convert your `int` to `Integer`; this is necessary if you want to put it in a collection because they can only store objects. If somebody is learning the language, is now a good point to start explaining the difference between reference and value types? Probably not. Especially as most developers _still_ think that value types live on the stack and reference types live on the heap and will try and explain it in those terms.
+Let's start with primitives such as `int` and `byte` which aren't objects, and their counterparts `Integer` and `Byte` which are. Because Java isn't really an object-oriented language, if you want to have an integer that is an object you have to convert your `int` to `Integer`; this is necessary if you want to put it in a collection because they can only store objects. If somebody is learning the language, is now a good point to start explaining the difference between reference and value types? Probably not. Especially as most developers _still_ think that value types live on the stack and reference types live on the heap, and that it matters, and thus will try and explain it in those terms.
 
 This might not seem so bad, as nowadays Java will auto-box your `int` to an `Integer` if you try to add it to a collection. But if you try and call a method on it, e.g. `(3).toString()`, then it won't auto-box it and you'll get a compiler error, so we're now in an inconsistent world where primitives are sometimes treated like objects and other times not. And while it's easy to convert `int` to `Integer`, you're back to a `for` loop if you want to convert `int[]` to `Integer[]`.
 
@@ -47,6 +47,8 @@ animals[0] = new Turtle(); // BOOM!
 ~~~
 
 This is broken because [it should always be legal to put a Turtle into an array of animals](http://blogs.msdn.com/b/ericlippert/archive/2007/10/17/covariance-and-contravariance-in-c-part-two-array-covariance.aspx).
+
+Not much more to say on that one.
 
 "Where's that book again?" variance is demonstrated by pretty much all other variance in Java, where it's so unintuitive you can really only figure out why things aren't doing what you expect, and how to fix it, by going back to the reference manual. For example, you'd expect a generic iterator to be covariant as types only come 'out', and therefore that you'd be able to treat a `List<String>` as an `Iterable<Object>`, but:
 
@@ -80,7 +82,7 @@ Let's see the C# versions of these examples with the same variance:
 ~~~csharp
 IEnumerable<object> items = new List<string>();
 
-public static T Max(IEnumerable<T> items) where T : IComparable<T> {
+public static T Max<T>(IEnumerable<T> items) where T : IComparable<T> {
     // ...
 }
 ~~~
@@ -122,7 +124,7 @@ bytes +:= 0
 
 Yeah, I'm not kidding. Those code fragments are equivalent.
 
-I know what you're thinking though. The Scala code looks more cryptic. But much like `a += b` expands to `a = a + b` in Java, `a +:= b` expands to `a = a.+:(b)` in Scala, where the part before the `=` is the method name (`+:` is a legal method name in Scala). All you have to remember is a universal expansion rule, which is arguably simpler than the localised expansion rule in Java. Any you don't need to refer to the documentation to see which order the parameters for the `arraycopy` method come in, or make an off-by-one error by carelessly using the wrong array length (did you spot that?).
+I know what you're thinking though. The Scala code looks more cryptic. But much like `a += b` expands to `a = a + b` in Java, `a +:= b` expands to `a = a.+:(b)` in Scala, where the part before the `=` is the method name (`+:` is a legal method name in Scala). All you have to remember is a universal expansion rule, which is arguably simpler than the localised expansion rule in Java. And you don't need to refer to the documentation to see which order the parameters for the `arraycopy` method come in, or make an off-by-one error by carelessly using the wrong array length (did you spot that?).
 
 You're probably thinking that's a contrived example, so let's take another one - produce the running total of an array of numbers, which is the kind of thing you might want to do for a receipt or on a summary screen. In Java you're looking at something like this (with no deliberate errors this time, I promise):
 
@@ -179,7 +181,7 @@ using (new BufferedReader(new FileReader(path))) { reader =>
 }
 ~~~
 
-Plus the really cool thing with this version is that say you want to return something from within the `using` block, because this is an an expression rather than a statement, you can just assign the result directly. This is something I've _often_ wanted to do when writing C#:
+Plus the really cool thing with this version is that say you want to return something from within the `using` block, because this is an an expression rather than a statement, you can just assign the result directly. This is something I've _often_ wanted to do when writing C# over the past decade or so:
 
 ~~~scala
 
@@ -188,7 +190,7 @@ val firstLine = using (new BufferedReader(new FileReader(path))) { reader =>
 }
 ~~~
 
-What's the big deal though? Java 7 has this language feature built in now so you're not gaining anything with Scala, right? Well, because the Scala approach is not dependent on a specific language feature you can apply it to scenarios other than just closing resources; for example you could create `borrow` helper that borrows resources from a pool and returns them to it at the end, or a `cached` helper where you check a cache for the resource and, if it isn't found, run the block to get it and then add it to the cache. In fact, you can add a helper like this for _any_ situation where you have 'before' and 'after' actions. And believe me, this is barely scratching the surface of what you can do with higher order functions.
+What's the big deal though? Java 7 has this language feature built in now so you're not gaining anything with Scala, right? Well, because the Scala approach is not dependent on a specific language feature you can apply it to scenarios other than just closing resources; for example you could create `borrow` helper that borrows resources from a pool and returns them to it at the end, or a `cached` helper where you check a cache for the resource and, if it isn't found, run the block to get it and then add it to the cache. In fact, you can add a helper like this for _any_ situation where you have 'before' and/or 'after' actions. And believe me, this is barely scratching the surface of what you can do with higher order functions.
 
 OK, one last one. Say you want to create a basic immutable 'property holder' class style in Java, which is a fairly common requirement, you're going to need to write something like this:
 
@@ -224,7 +226,7 @@ You can't even say the Scala version is cryptic this time, either.
  
 If you're still reading and you've managed to hold off being offended for long enough to actually consider some of the points I've made, you're probably starting to thing that maybe, just _maybe_, Java isn't the language you want to spend the next God-knows-how-many years coding in. Pretty much the same position that hordes of C++ developers found themselves in all the way back in 1996.
 
-The problem was that not much from C++ was salvageable when they moved to Java. Sure, all the language-agnostic skills such as functional decomposition, object-oriented design and the like were pretty transferable, but knowledge of all the class libraries and frameworks: gone. If you've spent a lot of effort learning all the Java libraries and frameworks and IDEs and so on, you don't want to be in the same boat as those C++ guys and get reset back to scratch.
+The problem was that not much from C++ was salvageable when they moved to Java. Sure, all the language-agnostic skills such as functional decomposition, object-oriented design and the like were pretty transferable, but knowledge of all the class libraries and frameworks: gone. If you've spent a lot of effort learning all the Java libraries and frameworks and build systems and so on, you don't want to be in the same boat as those C++ guys and get reset back to scratch.
 
 The thing is, you don't have to be.
 
@@ -242,7 +244,7 @@ You're still stuck with generic type erasure and some of the weird side effects 
 
 However, there are a few things standing in its way.
 
-The first, and probably the most significant, is you've got to read [a book](http://www.amazon.co.uk/Programming-In-Scala-2nd-Edition/dp/0981531644) to learn it because some of the syntax and idioms are fairly non-obvious until you know them. And as Steve Yegge frequently points out, most developers are happy to read about frameworks until the cows come home, but ask them to read a book about a new language and they'll look at you as if you're a madman.
+The first, and probably the most significant, is you've got to read [a book](http://www.amazon.co.uk/Programming-In-Scala-2nd-Edition/dp/0981531644) to learn it because some of the syntax and idioms are fairly non-obvious until you know them. And as Steve Yegge frequently points out, most developers are happy to read about frameworks until the cows come home, but ask them to read a book about a new language and they'll look at you with the same kind of horror as if you'd just asked them to cut off their own arm.
 
 I've always found this an odd stance to take. When you're working in an industry where there are so many languages used, how can you _not_ be curious about what they have to offer and why other people might be using them? Even with languages I wouldn't claim to have any knowledge of, I've still probably read a book about them and/or played around with them for a couple of days just to get a bit of a flavour.
 
@@ -262,12 +264,8 @@ Good question.
 
 And I'm not sure I have a good answer.
 
-Java is an outdated language, but that doesn't mean you can't build great systems with it. Most people consider C++ to be pretty outdated for systems building (that was the starting point for this post, if you can remember back that far) but Facebook use it extensively and it doesn't seem to have held them back too much. And there are some great frameworks (e.g Mule ESB, which we're using to shunt around messages) that use Java primarily as the glue, where it almost certainly makes sense to use it directly rather than try and wedge some other language in there.
+Java is an outdated language, but that doesn't mean you can't build great systems with it. Most people consider C++ to be pretty outdated for systems building (that was the starting point for this post, if you can remember back that far) but Facebook use it extensively and it doesn't seem to have held them back too much. And there are some great frameworks that provide a lot of functionality and just use Java as the glue, so when there isn't a lot of actual code it might not be worth the effort to try and wedge some other language in there.
 
-I guess the answer is that you need to differentiate between frameworks that you're using because they provide significant value which would require you to write a lot of complex and/or boilerplate code to replace them, and frameworks that you're using to make up for the language deficiencies which in turn _cause_ you to write even more complex and/or boilerplate code to support the framework (e.g. pretty much anything that has a lot of `Factory`, `Manager` or `Provider` classes). If your code is the latter - which a lot of Java code is - then you might be better off using a more modern language.
+However a lot of Java code seems to make extensive use of frameworks to try and compensate for the language deficiencies, and these frameworks often _cause_ you to write even more complex and/or boilerplate code just to support the framework, meaning your useful code (i.e. the stuff that solves actual business problems) is lost in a mire of support code. Pretty much any framework that has a lot of `Factory`, `Manager` or `Provider` classes, or that requires hundreds of lines of XML configuration, is going to be in this category. 
 
-
-
-
-
-
+Take an honest look at your current codebase and see what proportion of it is real business code, and what proportion is either framework support code/configuration or dumb data transfer objects with no real behaviour of their own. If the ratio's not so good, you might be better off using a more modern language.
