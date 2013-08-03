@@ -1,4 +1,5 @@
 Date: 2007-08-26  
+Status: Published  
 Tags: Code Contracts, Code Style, Debugging  
 
 # Document your assumptions with Debug.Assert instead of comments

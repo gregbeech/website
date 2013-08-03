@@ -1,4 +1,5 @@
 Date: 2008-09-01  
+Status: Published  
 Tags: Algorithms, Performance  
 
 # Optimised IP address to country code mapping

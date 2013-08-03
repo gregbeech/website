@@ -1,4 +1,5 @@
 Date: 03 Sep 2008  
+Status: Published  
 Tags: Algorithms, Linq, Sorting  
 
 # Shuffle and TakeRandom extension methods for IEnumerable<T>

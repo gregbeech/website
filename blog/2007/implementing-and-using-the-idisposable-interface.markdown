@@ -1,4 +1,5 @@
 Date: 2007-03-07  
+Status: Published  
 Tags: .NET, Design Guidelines, Garbage Collection  
 
 # Implementing and using the IDisposable interface

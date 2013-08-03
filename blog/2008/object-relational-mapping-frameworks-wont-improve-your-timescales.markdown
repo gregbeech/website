@@ -1,4 +1,5 @@
 Date: 2008-07-10  
+Status: Published  
 Tags: Architecture, Data Access  
 
 # Object-Relational Mapping frameworks won't improve your timescales

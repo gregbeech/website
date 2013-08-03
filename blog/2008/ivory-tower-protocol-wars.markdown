@@ -1,4 +1,5 @@
 Date: 2008-06-26  
+Status: Published  
 Tags: Architecture, Rants, REST, WCF, Web Services, XML  
 
 # Ivory tower protocol wars

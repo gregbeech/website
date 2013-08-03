@@ -1,4 +1,5 @@
 Date: 2006-01-03  
+Status: Published  
 Tags: C#, Exceptions
 
 # Why doesn't C# have exception filters?

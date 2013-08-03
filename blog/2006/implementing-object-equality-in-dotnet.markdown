@@ -1,4 +1,5 @@
 Date: 2006-07-04  
+Status: Published  
 Tags: .NET  
 
 # Implementing object equality in .NET

@@ -1,4 +1,5 @@
 Date: 2007-02-23  
+Status: Published  
 Tags: Rants  
 
 # Problem solving

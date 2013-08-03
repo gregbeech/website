@@ -1,4 +1,5 @@
 Date: 2007-09-29  
+Status: Published  
 Tags: C#, Data Access, Functional Programming
 
 # A functional approach to data access code

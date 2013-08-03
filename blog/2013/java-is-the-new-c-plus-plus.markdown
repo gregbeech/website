@@ -1,4 +1,5 @@
-Date: 2013-12-31
+Date: 2013-05-14  
+Status: Hidden  
 Tags: Java, Languages, Rants, Scala
 
 # Java is the new C++

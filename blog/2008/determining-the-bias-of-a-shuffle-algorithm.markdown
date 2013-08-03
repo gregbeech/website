@@ -1,4 +1,5 @@
 Date: 2008-09-09  
+Status: Published  
 Tags: Algorithms, Sorting, Testing
 
 # Determining the bias of a shuffle algorithm

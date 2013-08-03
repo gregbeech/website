@@ -1,4 +1,5 @@
 Date: 2007-09-25  
+Status: Published  
 Tags: .NET, Design Guidelines  
 
 # Common namespaces don't contain commonly used code

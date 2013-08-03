@@ -1,4 +1,5 @@
 Date: 2007-08-29  
+Status: Published  
 Tags: Code Contracts, Code Style, Debugging, Testing
 
 # How to integrate Debug.Assert with your unit test framework

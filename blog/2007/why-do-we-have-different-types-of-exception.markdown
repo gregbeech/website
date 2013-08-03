@@ -1,4 +1,5 @@
 Date: 2007-05-27  
+Status: Published  
 Tags: .NET, Design Guidelines, Exceptions
 
 # Why do we have different types of exception?

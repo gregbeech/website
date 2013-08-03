@@ -1,4 +1,5 @@
 Date: 2008-07-16  
+Status: Published  
 Tags: Architecture, Data Access, Performance
 
 # Service-orientation is inevitable for performant database applications

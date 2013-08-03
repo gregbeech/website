@@ -1,4 +1,5 @@
 Date: 2013-02-28   
+Status: Published  
 Tags: Caching, HTTP, REST  
 
 # An incomplete and probably incorrect guide to HTTP caching

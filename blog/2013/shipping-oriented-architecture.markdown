@@ -1,4 +1,5 @@
 Date: 2013-12-31  
+Status: Draft  
 Tags: Architecture, SOA, Versioning  
 
 # Shipping Oriented Architecture

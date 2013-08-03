@@ -1,4 +1,5 @@
 Date: 2007-09-04  
+Status: Published  
 Tags: ASP.NET, ASP.NET MVC, Code Contracts, Code Style, Debugging
 
 #How to integrate Debug.Assert with your ASP.NET web application

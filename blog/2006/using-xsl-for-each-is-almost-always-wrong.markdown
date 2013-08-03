@@ -1,4 +1,5 @@
 Date: 2006-08-17  
+Status: Published  
 Tags: XML  
 
 # Using xsl:for-each is almost always wrong

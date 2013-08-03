@@ -1,4 +1,5 @@
 Date: 2008-10-16  
+Status: Published  
 Tags: C#, Debugging, Functional Programming  
 
 # DebuggerStepThroughAttribute doesn't work with closures

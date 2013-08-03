@@ -1,4 +1,5 @@
 Date: 2008-11-05  
+Status: Published  
 Tags: Code Generation, CodeDom, Debugging, Visual Studio  
 
 # DebuggerVisualizers for CodeDom

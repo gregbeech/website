@@ -1,4 +1,5 @@
 Date: 2008-08-27  
+Status: Published  
 Tags: .NET, Design Guidelines, Garbage Collection  
 
 # Disposing and finalizing partially constructed objects

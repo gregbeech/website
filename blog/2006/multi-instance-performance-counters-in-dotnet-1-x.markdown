@@ -1,4 +1,5 @@
 Date: 2006-04-04  
+Status: Published  
 Tags: Installers, Monitoring, Performance  
 
 # Multi-instance performance counters in .NET 1.x

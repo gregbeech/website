@@ -1,4 +1,5 @@
 Date: 2013-12-31
+Status: Draft  
 Tags: Auth, Cryptography, Security, Tokens  
 
 # A rough guide to security tokens

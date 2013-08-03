@@ -1,4 +1,5 @@
 Date: 2009-11-20  
+Status: Published  
 Tags: Performance, Testing  
 
 # Performance optimisation

@@ -1,4 +1,5 @@
 Date: 2006-02-22  
+Status: Published  
 Tags: BizTalk  
 
 # Receiving large files via FTP in BizTalk

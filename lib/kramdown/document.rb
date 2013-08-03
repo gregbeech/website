@@ -1,10 +1,10 @@
-require 'kramdown'
+require "kramdown"
 
 module Kramdown
   class Document
 
     def metadata
-      # this isn't very good - should really recurse the tree nodes but i haven't worked
+      # this isn"t very good - should really recurse the tree nodes but i haven"t worked
       # out how to break cleanly from nested ruby iterators yet.
       @root.children.reduce({}) do |meta, node|
         # stop when we find the header
@@ -14,12 +14,14 @@ module Kramdown
         end
         # process text nodes before the header as metadata attributes
         node.children.select { |c| c.type == :text }.each do |text|
-          key, value = text.value.split(':').map { |s| s.strip.downcase }
+          key, value = text.value.split(":").map { |s| s.strip.downcase }
           case key
-          when 'date', 'updated'
+          when "date", "updated"
             meta[key.to_sym] = Date.parse(value.strip)
-          when 'tags'
-            meta[:tags] = value.split(',').collect { |tag| tag.strip }
+          when "status"
+            meta[:status] = value.strip.downcase.to_sym
+          when "tags"
+            meta[:tags] = value.split(",").collect { |tag| tag.strip }
           end
         end
         meta

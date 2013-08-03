@@ -1,4 +1,5 @@
 Date: 2013-07-04  
+Status: Published  
 Tags: Debugging, Humour  
 
 # Blue screen of nostalgia

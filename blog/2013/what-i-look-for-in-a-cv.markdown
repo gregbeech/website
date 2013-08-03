@@ -1,4 +1,5 @@
 Date: 2013-07-12  
+Status: Published  
 Tags: Hiring  
 
 # What I look for in a CV

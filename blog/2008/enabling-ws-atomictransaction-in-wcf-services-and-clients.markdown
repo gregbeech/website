@@ -1,4 +1,5 @@
 Date: 2008-06-18  
+Status: Published  
 Tags: Transactions, WCF, Web Services  
 
 # Enabling WS-AtomicTransaction in WCF services and clients

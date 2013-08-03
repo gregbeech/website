@@ -99,6 +99,11 @@ class MySite < Sinatra::Base
   def blog_posts(include_text = false, not_before = nil)
     posts = Dir.glob('blog/**/*.markdown').map { |filename| blog_post(filename, include_text) }
     posts.reject! { |post| !post[:date] || post[:date] > Date.today }
+    if ENV["RACK_ENV"] == "development"
+      posts.each { |post| post[:title] = "<<#{post[:status]}>> #{post[:title]}" if post[:status] != :published}
+    else
+      posts.reject! { |post| post[:status] != :published }
+    end
     posts.reject! { |post| post[:date] < not_before } if not_before 
     posts.sort! { |a, b| b[:date] <=> a[:date] }
   end

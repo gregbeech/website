@@ -1,4 +1,5 @@
 Date: 2006-10-01  
+Status: Published  
 Tags: Data Access, SQL Server  
 
 # Inline SQL vs stored procedures

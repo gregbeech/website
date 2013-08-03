@@ -1,4 +1,5 @@
 Date: 2007-06-06    
+Status: Published  
 Tags: .NET, Architecture, Exceptions, Monitoring, Pragmatism 
 
 # Pragmatic exception management, part 1

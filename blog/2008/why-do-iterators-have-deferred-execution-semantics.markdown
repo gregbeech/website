@@ -1,4 +1,5 @@
 Date: 2008-06-15  
+Status: Published  
 Tags: .NET, C#, Linq  
 
 # Why do iterators have deferred execution semantics?

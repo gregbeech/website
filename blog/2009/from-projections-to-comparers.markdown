@@ -1,4 +1,5 @@
 Date: 2009-11-16  
+Status: Published  
 Tags: .NET, Functional Programming, Linq, Sorting  
 
 # From Projections to Comparers

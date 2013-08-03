@@ -1,4 +1,5 @@
 Date: 2009-12-20  
+Status: Published  
 Tags: Algorithms, Performance, Sorting  
 
 # Sampling very large sequences

@@ -1,4 +1,5 @@
 Date: 2008-08-04  
+Status: Published  
 Tags: Code Style, Pragmatism  
 
 # Code without comments is code that doesn't work

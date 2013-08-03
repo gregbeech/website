@@ -1,4 +1,5 @@
 Date: 2009-01-21  
+Status: Published  
 Tags: ASP.NET MVC, REST, Web Services  
 
 # Deserializing the request body into a parameter with ASP.NET MVC

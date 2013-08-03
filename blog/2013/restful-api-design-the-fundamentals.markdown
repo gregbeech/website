@@ -1,4 +1,5 @@
-Date: 2013-05-21
+Date: 2013-05-21  
+Status: Published  
 Tags: Caching, Design, HTTP, REST  
 
 # RESTful API Design: The Fundamentals

@@ -1,4 +1,5 @@
 Date: 25 Apr 2007  
+Status: Published  
 Tags: Design Guidelines, Exceptions, Rants
 
 # Often the obvious solution is the right one
