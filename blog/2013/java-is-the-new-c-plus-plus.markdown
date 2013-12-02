@@ -1,5 +1,5 @@
 Date: 2013-05-14  
-Status: Hidden  
+Status: Published  
 Tags: Java, Languages, Rants, Scala
 
 # Java is the new C++
@@ -26,7 +26,7 @@ Anybody defending Java as a "good enough" language is generally doing so from a 
 
 The last stand of the Java developer when trying to defend the language is that at least it's easy to learn. But that isn't true either. What they mean is that because Java has so little expressive power that there isn't much in the way of language features to learn, which _is_ true, but Java still goes out of its way to make the few concepts it can express appear complex.
 
-Let's start with primitives such as `int` and `byte` which aren't objects, and their counterparts `Integer` and `Byte` which are. Because Java isn't really an object-oriented language, if you want to have an integer that is an object you have to convert your `int` to `Integer`; this is necessary if you want to put it in a collection because they can only store objects. If somebody is learning the language, is now a good point to start explaining the difference between reference and value types? Probably not. Especially as most developers _still_ think that value types live on the stack and reference types live on the heap, and that it matters, and thus will try and explain it in those terms.
+Let's start with primitives such as `int` and `byte` which aren't objects, and their counterparts `Integer` and `Byte` which are. Because Java isn't really an object-oriented language, if you want to have an integer that is an object you have to convert your `int` to `Integer`; this is necessary if you want to put it in a collection because they can only store objects. If somebody is learning the language, is now a good point to start explaining the difference between reference and value types? Probably not. Especially as most developers _still_ think that value types live on the stack and reference types live on the heap -- and that it matters -- and thus will try and explain it in those terms.
 
 This might not seem so bad, as nowadays Java will auto-box your `int` to an `Integer` if you try to add it to a collection. But if you try and call a method on it, e.g. `(3).toString()`, then it won't auto-box it and you'll get a compiler error, so we're now in an inconsistent world where primitives are sometimes treated like objects and other times not. And while it's easy to convert `int` to `Integer`, you're back to a `for` loop if you want to convert `int[]` to `Integer[]`.
 
@@ -60,7 +60,7 @@ Iterable<Object> items = new ArrayList<String>(); // error: incompatible types
 If you want to get this to compile then you have to change the declaration of the iterable to indicate its variance:
 
 ~~~java
-Iterable< ? extends Object> items = new ArrayList<String>();
+Iterable<? extends Object> items = new ArrayList<String>();
 ~~~
 
 You probably didn't need the book to work out how to fix that one, but you might for this. How do you declare a method to get the maximum item from a sequence, which works if the items implement the `Comparable<T>` interface anywhere in their inheritance chain (i.e. it could be implemented on their base class)?
@@ -70,9 +70,8 @@ Don't peek...
 Did you get it?
 
 ~~~java
-public static <T extends Comparable< ? super T>> T max(Iterable< ? extends T> items) {
+public static <T extends Comparable<? super T>> T max(Iterable<? extends T> items) {
     // ...
-    return null;
 }
 ~~~
 
@@ -249,7 +248,7 @@ The first, and probably the most significant, is you've got to read [a book](htt
 
 I've always found this an odd stance to take. When you're working in an industry where there are so many languages used, how can you _not_ be curious about what they have to offer and why other people might be using them? Even with languages I wouldn't claim to have any knowledge of, I've still probably read a book about them and/or played around with them for a couple of days just to get a bit of a flavour.
 
-That's OK though. You've read this far, so you're probably not most developers. Go pick up a copy of that book from somewhere (if you're a Safari Books Online subscriber it's available to you right now) and spend a few weeks working through it. I guarantee you'll start looking at Java in a whole different way, and - even if nothing else - you'll finally understand that [Blub paradox](http://www.paulgraham.com/avg.html) article.
+That's OK though. You've read this far, so you're probably not most developers. Go pick up a copy of that book from somewhere (if you're a Safari Books Online subscriber it's available to you right now) and spend a few weeks working through it. I guarantee you'll start looking at Java in a whole different way, and -- even if nothing else -- you'll finally understand that [Blub paradox](http://www.paulgraham.com/avg.html) article.
 
 The second hurdle is the potential impedance mismatch between Scala and the Java-oriented libraries. Although it's easy to consume Java libraries from Scala, there are quite a number of libraries that assume your code will adhere to certain conventions, and may not function correctly - or at all - if it doesn't. 
 

@@ -8,6 +8,9 @@
 %ol.blogposts
   -posts.each do |post|
     %li
+      -if post[:title].start_with?("**")
+        %span.warn
+          #{post[:title][/(?<=\*\*)(.+)(?=\*\*)/]}:
       %a{ href: post[:link] }
-        & #{post[:title]}
+        #{post[:title].gsub(/\*\*(.+)\*\*/, "")}
       %span.pubdate, #{post[:date].strftime('%-d %b %Y')}

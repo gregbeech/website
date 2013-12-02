@@ -4,12 +4,7 @@ require 'kramdown'
 require 'less'
 require 'builder'
 require 'sinatra/base'
-require './lib/coderay/scanners/csharp'
-require './lib/coderay/scanners/gherkin'
-require './lib/coderay/scanners/scala'
-require './lib/coderay/scanners/vb'
-require './lib/haml/filters/markdown'
-require './lib/kramdown/document'
+Dir.glob("./lib/**/*.rb").each { |file| require file unless file =~ /builtin_types/ }
 
 class MySite < Sinatra::Base
   set :haml, format: :html5, ugly: true
@@ -101,7 +96,7 @@ class MySite < Sinatra::Base
     posts = Dir.glob('blog/**/*.markdown').map { |filename| blog_post(filename, include_text) }
     posts.reject! { |post| !post[:date] || post[:date] > Date.today }
     if ENV["RACK_ENV"] == "development"
-      posts.each { |post| post[:title] = "<<#{post[:status]}>> #{post[:title]}" if post[:status] != :published}
+      posts.each { |post| post[:title] = "**#{post[:status]}** #{post[:title]}" if post[:status] != :published}
     else
       posts.reject! { |post| post[:status] != :published }
     end
