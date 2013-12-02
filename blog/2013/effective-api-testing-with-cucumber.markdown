@@ -169,8 +169,9 @@ The automation for the step converts the specified table into a hash, and this i
 
 ~~~ruby
 Then(/(#{CAPTURE_INT}) (?:.*?) ha(?:s|ve) the following attributes$/) do |count, table|
-  expected_item = table.hashes.each_with_object({}) do |(name, type, value), hash|
-    hash[name.tr(" ", "_").camelize] = value.to_type(type.singularize.constantize)
+  expected_item = table.hashes.each_with_object({}) do |row, hash|
+    name, value, type = row["name"], row["value"], row["type"]
+    hash[name.tr(" ", "_").camelize] = value.to_type(type.constantize)
   end
   data = MultiJson.load(last_response.body)
   matched_items = data.filter { |item| item == expected_item }

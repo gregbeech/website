@@ -48,7 +48,7 @@ class MySite < Sinatra::Base
 
   get '/blog/rss' do
     content_type 'application/rss+xml'
-    posts = blog_posts(include_text: true, not_before: Date.now - (365 * 24 * 3600))
+    posts = blog_posts(include_text: true, not_before: DateTime.now - (365 * 24 * 3600))
     builder do |rss|
       rss.rss version: '2.0' do
         rss.channel do
@@ -57,7 +57,7 @@ class MySite < Sinatra::Base
           rss.description 'Greg Beech\'s Blog'
           rss.language 'en-GB'
           rss.category 'Technology'
-          rss.copyright "Copyright (C) Greg Beech 2006-#{Date::today.year}. All Rights Reserved."
+          rss.copyright "Copyright (C) Greg Beech 2006-#{Date.today.year}. All Rights Reserved."
           rss.pubDate posts.first[:date].strftime(RFC822_DATE_FORMAT)
           rss.lastBuildDate Time.new.strftime(RFC822_DATE_FORMAT)
           rss.docs 'http://blogs.law.harvard.edu/tech/rss'
