@@ -1,14 +1,14 @@
-Date: 2013-12-02  
-Status: Draft  
+Date: 2014-01-19  
+Status: Published  
 Tags: Cucumber, Gherkin, Testing  
 
 # Effective API testing with Cucumber
 
 At [blinkbox books](http://www.blinkboxbooks.com) we're making extensive use of Cucumber to capture business requirements and ensure that the code fulfils them. If you're getting started with Cucumber, a lot of the good practices for writing Gherkin specifications and effectively automating them is captured by [The Cucumber Book](http://pragprog.com/book/hwcuc/the-cucumber-book) which is, like most of the Pragmatic Bookshelf, a very good book indeed.
 
-However, in the chapter where they discuss testing REST APIs they really dropped the ball. It's completely and utterly incorrect, and you should not be testing your REST APIs in this way.
+However, in the chapter where they discuss testing REST APIs they completely dropped the ball. It's at odds with the rest of the book, and frankly most of the recommendations make no sense at all; you should not be testing your APIs in the way they describe.
 
-Let's take an example scenario from chapter 12, "Testing a REST Web Service", to see the approach they're suggesting:
+Let's take an example scenario from chapter 12, "Testing a REST Web Service", to see the suggested approach:
 
 ~~~gherkin
 Scenario: List fruit
@@ -89,17 +89,17 @@ The first step is fine, so I've left that as is, but after that things start to 
 
 Note that this specification does not even make mention of HTTP or JSON, so could easily be mapped to other kinds of API or different implementations without having to rewrite the product requirements.
 
-We'll go through the changed steps one at a time, along with corresponding implementation, starting with:
+We'll go through the changed steps one at a time, along with corresponding implementation, starting with the following (all the code to support this post is available [on GitHub](https://github.com/gregbeech/cukes_rest)):
 
 ~~~gherkin
   When the client requests a list of fruit
 ~~~
 
-This step now states exactly what the client is doing in product language, thus creating its own domain specific language. The implementation is fairly trivial, assuming that we have an `http_get` helper method defined somewhere, and creates the mapping between the product requirement and HTTP.
+This step now states exactly what the client is doing in product language, thus creating its own domain specific language. The implementation is fairly trivial, assuming that we have an `get` helper method defined somewhere (e.g. `rack-test`) and creates the mapping between the product requirement and HTTP.
 
 ~~~ruby
-When(/^the client requests a list of (.?*)$/) do |type|
-  http_get "/#{type.pluralize.downcase.tr(' ', '-')}"
+When(/^the client requests a list of (.*?)s?$/) do |type|
+  get("/#{type.pluralize.downcase.tr(' ', '-')}")
 end
 ~~~
 
@@ -116,7 +116,7 @@ The next step describes what the expected response is at a high level, and it is
 Although this is a short step, it tells us a lot about the structure of the response: it's a list, it has two items in it, and each item should look like a fruit. The automation for this is actually a little complex, if we take the time to make it reusable, with the step definition looking something like this:
 
 ~~~ruby
-Then(/^the response is a list containing (#{CAPTURE_INT}) (.*?)$/) do |count, type|
+Then(/^the response is a list containing (#{CAPTURE_INT}) (.*?)s?$/) do |count, type|
   data = MultiJson.load(last_response.body)
   validate_list(data, of: type, count: count)
 end
@@ -139,7 +139,7 @@ def validate_list(data, of: nil, count: nil)
   expect(data).to be_a_kind_of(Array)
   expect(data.count).to eq(count) unless count.nil?
   unless of.nil?
-    validate_item = "validate_#{of.singularize.downcase.tr(' ', '_'}".to_sym
+    validate_item = "validate_#{of.singularize.downcase.tr(' ', '_')}".to_sym
     data.each { |item| send(validate_item, item) }
   end
 end
@@ -168,13 +168,13 @@ The final steps perform additional validation on the contents of the list, beyon
 The automation for the step converts the specified table into a hash, and this is another good reason for having the type in the table, so that the conversion can be done accurately as by default everything in Gherkin is a string. It then searches the array for matching items and checks the count.
 
 ~~~ruby
-Then(/(#{CAPTURE_INT}) (?:.*?) ha(?:s|ve) the following attributes$/) do |count, table|
+Then(/(#{CAPTURE_INT}) (?:.*?) ha(?:s|ve) the following attributes:$/) do |count, table|
   expected_item = table.hashes.each_with_object({}) do |row, hash|
-    name, value, type = row["name"], row["value"], row["type"]
-    hash[name.tr(" ", "_").camelize] = value.to_type(type.constantize)
+    name, value, type = row["attribute"], row["value"], row["type"]
+    hash[name.tr(" ", "_").camelize(:lower)] = value.to_type(type.constantize)
   end
   data = MultiJson.load(last_response.body)
-  matched_items = data.filter { |item| item == expected_item }
+  matched_items = data.select { |item| item == expected_item }
   expect(matched_items.count).to eq(count)
 end
 ~~~
@@ -219,7 +219,7 @@ Scenario: List cup sizes
     | Regular | 12           |
     | Large   | 16           |
   When the client requests a list of cup sizes
-  Then the response is a list containing two cup sizess
+  Then the response is a list containing two cup sizes
   And one cup sizes has the following attributes:
     | attribute    | type    | value   |
     | name         | String  | Regular |
@@ -230,7 +230,7 @@ Scenario: List cup sizes
     | fluid ounces | Integer | 16    |
 ~~~
 
-We'd need to implement a new `Given` step but I'll skip that because that was really out of scope so far.
+We'd need to implement a new `Given` step but I'll skip the implementation of that in this post because the setup steps have been out of scope so far.
 
 The `When` step is already automated as the parameterised step will match it, and based on the convention we've used it means that then API endpoint must be at `/cup-sizes`.
 
