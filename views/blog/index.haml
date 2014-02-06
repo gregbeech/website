@@ -13,4 +13,4 @@
           #{post[:title][/(?<=\*\*)(.+)(?=\*\*)/]}:
       %a{ href: post[:link] }
         #{post[:title].gsub(/\*\*(.+)\*\*/, "")}
-      %span.pubdate, #{post[:date].strftime('%-d %b %Y')}
+      %span.pubdate - #{post[:date].strftime('%-d %b %Y')}

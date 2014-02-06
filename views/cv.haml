@@ -13,26 +13,30 @@
 
     My preference is to work on the server-side as it has a high concentration of areas I find interesting, such as security, reliability, scalability and compatibility. That said, I'm more than happy to tackle anything sufficiently difficult, which has resulted in projects like building blinkbox's Xbox 360 application. Most of what I've built has been with C#, although I enjoy picking up new languages and platforms and have delivered software using Ruby, JavaScript, Java, BizTalk, Objective-C and Visual Basic (in roughly decreasing order of preference), and am currently learning Scala.
 
-    I've also got experience of leading and managing teams. I don't think it's my forté, and pure management roles are something I have no interest in at all, but I'm good at building teams of highly talented developers, setting the technical direction, and creating a culture where people can get on with what they're best at and be recognised and rewarded for it.
+    I've also got experience of leading and managing teams, where my mix of people skills, leadership abilities and technical knowledge are an effective combination. I'm good at building teams of highly talented developers, setting the technical direction, and creating a culture where people can get on with what they're best at and be recognised and rewarded for it.
 
 %h2 Career
 
 %h3 Head of Platform Development - Books, blinkbox (Jan 2013 - Present)
 %p
   :markdown
-    I'm currently responsible for the overall architecture and delivery of the soon-to-be-launched eBooks server platform. We're building a distributed platform using Java and Mule ESB which is exposed as RESTful services. We're also building a book ingestion and management system in Ruby and AngularJS, backed by CouchDB. We're always looking for great developers to join us - if you're interested then get in touch.
+    I'm currently responsible for the overall architecture and delivery of the soon-to-be-launched books server platform. My main focus has been on hiring an outstanding team of developers, and evolving the existing monolithic Java web application into vertically partitioned services exposed as RESTful APIs.
+
+    One of the key challenges was determining what was needed, due to the lack of an MD or product team in the beginning, and the extent to which the existing platform met these needs. To tackle this I introduced Cucumber which allowed us to retrofit specifications to the codebase, and evolve them as the company gained and changed direction.
+
+    Some other achievements in this role have been building a lightweight pub-sub message bus on top of RabbitMQ, moving the company towards a continuous deployment model (although not there yet, deployment times have reduced from weeks to hours), and introducing Ruby and Scala as alternative implementation languages.
 
 %h3 Principal Development Lead, blinkbox (May 2011 - Dec 2012)
 %p
   :markdown
-    I built the Xbox 360 application with one other developer, based on the Xbox's custom version of Silverlight. During development, the requirements and underlying platform were changing constantly and significantly, which we handled by using a loosely coupled MVVM architecture.
+    I built the Xbox 360 application with one other developer, based on the Xbox's custom version of Silverlight. During development the requirements and underlying platform were changing constantly and significantly, which we handled by using a loosely coupled MVVM architecture.
 
     Subsequently I was responsible for taking the core libraries we had built for Xbox, making them suitable for other .NET platforms, and building comparable libraries for iOS, Android and JavaScript. I hired a small team to help me, and we used semantic versioning to evolve libraries that the UI teams could build upon even though they were under active development. I learned Objective-C to build the iOS library due to difficulties hiring people with the relevant skills.
 
 %h3 Senior Development Lead, blinkbox (July 2007 - April 2011)
 %p
   :markdown
-    I worked with a couple of other people to design and build a scalable middle tier using a service-oriented architecture on the .NET platform. We made extensive use of aspects, design-time and runtime code generation to remove boiler-plate code like tracing and exception management, and used higher-order programming to centralise common functionality such as caching and data access.
+    I worked with a couple of other people to design and build a scalable middle tier using a service-oriented architecture on the .NET platform. We made extensive use of aspects, design-time and runtime code generation to remove boilerplate code like tracing and exception management, and used higher-order programming to centralise common functionality such as caching and data access.
 
     We also developed a distributed video encoder which included process monitoring and recycling to work around memory leaks in third-party components, and wrote video parsers to be able to reliably extract data from and modify video files even when they weren't fully standards compliant.
 
@@ -46,7 +50,7 @@
 %h3 Senior Consultant, Charteris (Jan 2005 - Aug 2006)
 %p
   :markdown
-    I worked on three integration projects consecutively; each lasting between three and nine months. One was based around Microsoft’s Connected Services Framework where we developed WS-* adapters to communicate with external systems. The others were based on BizTalk 2004, and included building custom pipeline components, and a finite state machine in the Rules Engine which enlisted in BizTalk transactions to reliably manage the state of processes.
+    I worked on three integration projects consecutively; each lasting between three and nine months. One was based around Microsoft’s Connected Services Framework where we developed WS-* adapters to communicate with external systems. The others were based on BizTalk 2004, and included building custom pipeline components, and a finite state machine in the Rules Engine that enlisted in BizTalk transactions to reliably manage the state of processes.
 
 %h3 Software Development Engineer in Test, Microsoft (Sept 2001 - Dec 2004)
 %p
@@ -57,4 +61,5 @@
 
 %h3 MEng (Hons) First Class, Chemical Engineering, University of Nottingham (1997 - 2001)
 %p
-  My degree covered a wide range of subjects such as maths, physics, thermodynamics and programming. The final year project was designing a chemical plant as part of a small group; part of my contribution was a genetic algorithm for resolving mass/mole balances across equipment, and a stepwise reaction kinetics simulator. I was awarded a BP Book Prize for excellent first year results and the J.C. Mecklenburgh prize for the most outstanding fourth year design project, which received the highest mark ever awarded.
+  :markdown
+    My degree covered a wide range of subjects such as maths, physics, thermodynamics and programming. The final year project was designing a chemical plant as part of a small group; part of my contribution was a genetic algorithm for resolving mass/mole balances across equipment, and a stepwise reaction kinetics simulator. I was awarded a BP Book Prize for excellent first year results and the J.C. Mecklenburgh prize for the most outstanding fourth year design project.
