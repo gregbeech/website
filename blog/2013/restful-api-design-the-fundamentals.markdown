@@ -30,7 +30,7 @@ Two different representations of a single resource. All good so far.
 
 However, using a generic markup language media type is a sign of another commonly confused aspect of REST: the difference between markup language and dialect. A generic media type like `application/json` tells you the markup language used to encode the data, but nothing about how to interpret the data itself.
 
-You might think that you could use namespaces to resolve this, but (a) that only works for markup languages that support namespaces, so JSON's out, and (b) it doesn't give any way for the client to specify which versions of the dialect it understands so you might be returning a version that it can't handle anyway. Using a generic media markup language media type means it's impossible to version your dialect. 
+You might think that you could use namespaces to resolve this, but (a) that only works for markup languages that support namespaces, so JSON's out, and (b) it doesn't give any way for the client to specify which versions of the dialect it understands so you might be returning a version that it can't handle anyway. Using a generic media markup language media type means it's impossible to version your dialect.
 
 To solve this problem you need to define your own media types that takes both the dialect and markup language into account, for example:
 
@@ -137,9 +137,9 @@ Generally authentication will not be handled by a RESTful API; the process is in
 However, RESTful APIs often perform authorisation. This is typically broken down into two phases:
 
 1. Processing any authentication tokens in the request and construction of a resultant claim set (typically stored in a principal).
-2. Evaluation of the claim set against the requirements for the endpoint. 
+2. Evaluation of the claim set against the requirements for the endpoint.
 
-If the user does not meet the requirements for the end point, the 'identity' (or 'subject') claim is missing (i.e. the user is not signed in), and signing in could result in the user being allowed access then return 401 Unauthorized. Otherwise, if either the is already signed in, or signing in could not possibly resolve the lack of permission (e.g. the endpoint is GeoIP restricted so depends on ambient context not identity), then return 403 Forbidden.
+If the user does not meet the requirements for the end point, the 'identity' (or 'subject') claim is missing (i.e. the user is not signed in), and signing in could result in the user being allowed access then return 401 Unauthorized. Otherwise, if the user is either already signed in, or signing in could not possibly resolve the lack of permission (e.g. the endpoint is GeoIP restricted so depends on ambient context not identity), then return 403 Forbidden.
 
 In terms of passing authorisation tokens to a RESTful API then the only semantically correct option is in the headers; as previously discussed it is not valid to put it in the URL because the token itself does not form part of the identity of the resource, even if information contained within the token may be used to select a particular resource. Similarly, it isn't valid to put it in the body because that's conflating the resource representation with the permissions to act on it.
 
@@ -151,7 +151,7 @@ As a sidebar to this section: Forget device authorisation or encrypted API keys 
 
 Everybody likes a summary, so here it is:
 
-REST is hard, and you're probably doing it wrong. 
+REST is hard, and you're probably doing it wrong.
 
 Don't blame yourself; just about everybody is. Heck, if Roy Fielding ever actually reads this article I'll probably be on the receiving end of a frustrated email telling me all the things I got wrong or missed out (which, frankly, would be awesome).
 
