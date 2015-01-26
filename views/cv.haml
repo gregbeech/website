@@ -1,48 +1,43 @@
 -# coding: utf-8
 %h1 Greg Beech
 
-%p.notice
-  Please note that I'm not looking for a job at the moment as I'm very happy where I am.
-  %br
-  This document is provided for entertainment purposes only.
-
 %h2 Profile
 %p
   :markdown
-    I'm a talented developer, lead and manager with thirteen years experience of designing, building and shipping software. That doesn't mean I'm under the illusion that I'm an expert, nor am I closed-minded or set in my ways. It just means I've had a decent amount of time to try things out, make mistakes and learn from them.
+    I'm a talented developer, lead and manager with fourteen years experience of designing, building and shipping software. That doesn't mean I'm under the illusion that I'm an expert, nor am I closed-minded or set in my ways. It just means I've had a decent amount of time to try things out, make mistakes and learn from them.
 
     My preference is to work on the server-side as it has a high concentration of areas I find interesting, such as security, reliability, scalability and compatibility. That said, I'm more than happy to tackle anything sufficiently difficult, and have delivered a number of critical client-side projects as a result.
 
-    I'm a true polyglot, happy working in numerous languages and adept at learning new ones. In the last couple of years I've been using primarily Scala and Ruby, but I've also delivered large scale software projects with C#, JavaScript, Java, Objective-C and VB6. In general I favour a concise, functional, asynchronous programming style.
+    I'm a true polyglot, happy working in numerous languages and adept at learning new ones. In the last couple of years I've been using primarily Scala and Ruby, but I've also delivered large scale software projects with C#, JavaScript, Java, Objective-C and VB6. In general I favour a concise, functional programming style.
 
     When it comes to leading and managing teams, my rare mix of business and technology insight, people skills, leadership abilities and deep technical knowledge are an effective combination. I'm great at building teams of highly talented developers, setting the technical direction, and creating a culture with a high level of autonomy, responsibility, recognition and reward. My teams have a reputation for delivering projects on time to an extremely high standard.
 
 %h2 Career
 
-%h3 Head of Platform Development - Books, blinkbox (Jan 2013 - Present)
+%h3 Head of Platform Development, blinkbox Books (Jan 2013 - Feb 2015)
 %p
   :markdown
-    I'm currently responsible for the overall architecture and delivery of books server platform. My main focus has been on hiring an outstanding team of developers, and evolving the existing monolithic Java web application into vertically partitioned services exposed as RESTful APIs.
+    I was responsible for the overall architecture and delivery of books server platform. My main focus was on hiring an outstanding team of developers and evolving the existing monolithic Java web application into vertically partitioned microservices exposed as RESTful APIs.
 
-    One of the key challenges was determining what was needed, due to the lack of an MD or product team in the beginning, and the extent to which the existing platform met these needs. To tackle this I introduced Cucumber which allowed us to retrofit specifications around the codebase, and evolve them as the company gained and changed direction.
+    Initially there was little business direction or understanding of the precise behaviour of the platform. To tackle this I introduced Cucumber which allowed us to retrofit specifications around the codebase and evolve them as the company gained and changed direction. I also introduced standards for code reviews and unit/integration testing for newly written code.
 
-    Some other achievements in this role have been:
+    Some other achievements in this role were:
 
-    - Successfully transitioning the team from Java to Scala to improve quality, performance and delivery times.
-    - Building a lightweight pub-sub message bus on top of RabbitMQ to facilitate an event and command driven architecture. This means we can often add or change functionality with minimal impact on the system.
-    - Moving the company towards a continuous deployment model. Although not there yet, deployment times have reduced from weeks after the commit to a day or two.
+    - Successfully transitioning the team from Java to Scala to help improve coding practices, reduce delivery times, and make it easier to write asynchronous code.
+    - Building a lightweight pub-sub message bus on top of RabbitMQ to facilitate an event and command driven architecture. This meant we could often add or change functionality with minimal impact on the system.
+    - Moving the company towards a continuous deployment model. Although we did not quite get there, deployment times reduced from weeks after the commit to as little as a couple of hours, including propagation through multiple test rigs.
 
-%h3 Principal Development Lead, blinkbox (May 2011 - Dec 2012)
+%h3 Principal Development Lead, blinkbox Movies (May 2011 - Dec 2012)
 %p
   :markdown
-    I built the Xbox 360 application with one other developer, based on the Xbox's custom version of Silverlight. During development the requirements and underlying platform were changing constantly and significantly, which we handled by using a loosely coupled MVVM architecture.
+    I built the Xbox 360 application with one other developer, based on the Xbox's custom version of Silverlight. During development the requirements and underlying platform were changing constantly and significantly, which we handled by using a loosely coupled MVVM architecture with cleanly separated layers and strong conventions.
 
     Subsequently I was responsible for taking the core libraries we had built for Xbox, making them suitable for other .NET platforms, and building comparable libraries for iOS, Android and JavaScript. I hired a small team to help me, and we used semantic versioning to evolve libraries that the UI teams could build upon even though they were under active development. I learned Objective-C to build the iOS library due to difficulties hiring people with the relevant skills.
 
-%h3 Senior Development Lead, blinkbox (July 2007 - April 2011)
+%h3 Senior Development Lead, blinkbox Movies (July 2007 - April 2011)
 %p
   :markdown
-    I worked with a couple of other people to design and build a scalable middle tier using a service-oriented architecture on the .NET platform. We made extensive use of aspects, design-time and runtime code generation to remove boilerplate code like tracing and exception management, and used higher-order programming to centralise common functionality such as caching and data access.
+    I worked with a couple of other people to design and build a scalable middle tier using a service-oriented architecture on the .NET platform. We made extensive use of aspects, design-time and runtime code generation to remove boilerplate code like tracing and exception management, and used higher-order functions to centralise common functionality such as caching and data access.
 
     We also developed a distributed video encoder which included process monitoring and recycling to work around memory leaks in third-party components, and wrote video parsers to be able to reliably extract data from and modify video files even when they weren't fully standards compliant.
 
