@@ -9,24 +9,18 @@ module Scanners
     require_relative "./scala/builtin_types"
     # autoload :BuiltinTypes, "./scala/builtin_types"
     
-    # http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html
     KEYWORDS = %w[
-      case catch continue default do else object match with val var
-      finally for if instanceof import new package override def
-      return switch throw try typeof while implicit type 
-      debugger export
+      abstract case catch class def do else extends false final finally for forSome if implicit
+      import lazy match new null object override package private protected return sealed super 
+      this throw trait try true type val var while with yield
     ]  # :nodoc:
-    RESERVED = %w[ const goto ]  # :nodoc:
-    CONSTANTS = %w[ false null true ]  # :nodoc:
+    RESERVED = %w[ ]  # :nodoc:
+    CONSTANTS = %w[ ]  # :nodoc:
     MAGIC_VARIABLES = %w[ this super ]  # :nodoc:
     TYPES = %w[
-      boolean byte char class double enum float int interface long
-      short void
-    ] << '[]'  # :nodoc: because int[] should be highlighted as a type
-    DIRECTIVES = %w[
-      abstract extends final implements native private protected public
-      static strictfp synchronized throws transient volatile
+      Boolean Unit String Byte Short Char Int Long Float Double Array Tuple Enumeration Function PartialFunction
     ]  # :nodoc:
+    DIRECTIVES = %w[ ]  # :nodoc:
     
     IDENT_KIND = WordList.new(:ident).
       add(KEYWORDS, :keyword).
