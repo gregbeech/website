@@ -1,6 +1,6 @@
-Date: 2015-01-27  
-Status: Draft  
-Tags: Security, Scala, Json4s, PII  
+Date: 2015-01-28  
+Status: Published  
+Tags: Security, Scala, PII  
 
 # Reducing sensitive information leakage
 
