@@ -17,20 +17,21 @@
 %h3 Head of Platform Development, blinkbox Books (Jan 2013 - Feb 2015)
 %p
   :markdown
-    I was responsible for the overall architecture and delivery of books server platform. My main focus was on hiring an outstanding team of developers and evolving the existing monolithic Java web application into vertically partitioned microservices exposed as RESTful APIs.
+    I was responsible for the overall architecture and delivery of books server platform. My main focus was on hiring an outstanding team of developers, evolving the existing monolithic Java web application into vertically partitioned microservices exposed as RESTful APIs, and redesigning and extending the Ruby ingestion system.
 
     Initially there was little business direction or understanding of the precise behaviour of the platform. To tackle this I introduced Cucumber which allowed us to retrofit specifications around the codebase and evolve them as the company gained and changed direction. I also introduced standards for code reviews and unit/integration testing for newly written code.
 
     Some other achievements in this role were:
 
-    - Successfully transitioning the team from Java to Scala to help improve coding practices, reduce delivery times, and make it easier to write asynchronous code.
+    - Successfully transitioning the backend from Java to Scala to help improve coding practices, reduce delivery times, make it easier to write asynchronous code, and improve overall developer happiness.
     - Building a lightweight pub-sub message bus on top of RabbitMQ to facilitate an event and command driven architecture. This meant we could often add or change functionality with minimal impact on the system.
+    - Introducing the Scrum methodology into my team and subsequently driving this out across the company, helping us to move from teams siloed by discipline and technology into cross-functional delivery teams.
     - Moving the company towards a continuous deployment model. Although we did not quite get there, deployment times reduced from weeks after the commit to as little as a couple of hours, including propagation through multiple test rigs.
 
 %h3 Principal Development Lead, blinkbox Movies (May 2011 - Dec 2012)
 %p
   :markdown
-    I built the Xbox 360 application with one other developer, based on the Xbox's custom version of Silverlight. During development the requirements and underlying platform were changing constantly and significantly, which we handled by using a loosely coupled MVVM architecture with cleanly separated layers and strong conventions.
+    I built the Xbox 360 application with one other developer, based on the Xbox's custom version of Silverlight. During development the requirements and underlying platform were changing constantly and significantly, which we handled by using a loosely coupled MVVM architecture with cleanly separated layers and strong conventions. This project was written to very tight timescales, and ours was one of the few apps to launch with the Xbox dashboard refresh.
 
     Subsequently I was responsible for taking the core libraries we had built for Xbox, making them suitable for other .NET platforms, and building comparable libraries for iOS, Android and JavaScript. I hired a small team to help me, and we used semantic versioning to evolve libraries that the UI teams could build upon even though they were under active development. I learned Objective-C to build the iOS library due to difficulties hiring people with the relevant skills.
 
