@@ -1,5 +1,5 @@
 Date: 2015-04-04  
-Status: Draft  
+Status: Published  
 Tags: HTTP, Caching, Concurrency  
 
 # The problem with ETags in RESTful APIs
