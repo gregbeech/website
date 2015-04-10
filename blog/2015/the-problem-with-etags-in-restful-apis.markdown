@@ -14,7 +14,7 @@ GET /addresses/1 -> Last-Modified: 11:20, ETag: "1120"
 GET /addresses/2 -> Last-Modified: 11:45, ETag: "1145"
 ~~~
 
-No surprises there. But now let's try some updates using `If-Match` or `If-Unmodified-Since` conditional request headers which facilitate optimistic concurrency, particularly useful in the modern modern world where state is heavily cached and users often have multiple devices. Assume we retrieved the list of addresses using `GET /addresses` and now want to update them.
+No surprises there. But now let's try some updates using `If-Match` or `If-Unmodified-Since` conditional request headers which facilitate optimistic concurrency, particularly useful in the modern world where state is heavily cached and users often have multiple devices. Assume we retrieved the list of addresses using `GET /addresses` and now want to update them.
 
 Using modification dates everything works as we'd expect:
 
